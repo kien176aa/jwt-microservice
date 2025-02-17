@@ -1,0 +1,6 @@
+com\javatechie\service\SwiggyAppService.class
+com\javatechie\client\RestaurantServiceClient.class
+com\javatechie\controller\SwiggyAppController.class
+com\javatechie\dto\OrderResponseDTO.class
+com\javatechie\SwiggyAppApplication.class
+com\javatechie\config\SwiggyAppConfig.class
