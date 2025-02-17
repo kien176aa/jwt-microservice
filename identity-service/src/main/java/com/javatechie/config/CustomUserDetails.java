@@ -1,6 +1,6 @@
 package com.javatechie.config;
 
-import com.javatechie.entity.UserCredential;
+import com.javatechie.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,7 +11,7 @@ public class CustomUserDetails implements UserDetails {
     private String username;
     private String password;
 
-    public CustomUserDetails(UserCredential userCredential) {
+    public CustomUserDetails(User userCredential) {
         this.username = userCredential.getName();
         this.password = userCredential.getPassword();
     }

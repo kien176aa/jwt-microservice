@@ -11,16 +11,18 @@ spring:
 
 
        - id: restaurant-service
-         uri: lb://RESTAURANT-SERVICE
+         uri: lb://PRODUCT-SERVICE
          predicates:
-           - Path=/restaurant/**
+           - Path=/products/**
          filters:
            - AuthenticationFilter
 
        - id: identity-service
          uri: lb://IDENTITY-SERVICE
          predicates:
-           - Path=/auth/**
+           - Path=/auth/**, /users/**
+         filters:
+         - AuthenticationFilter
 
  application:
    name: SWIGGY-GATEWAY
