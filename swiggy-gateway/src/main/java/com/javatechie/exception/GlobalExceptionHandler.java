@@ -40,7 +40,7 @@ public class GlobalExceptionHandler implements WebExceptionHandler {
             response.setStatusCode(HttpStatus.BAD_REQUEST);
             errorResponse = new ErrorResponse(400, ex.getMessage());
         } else {
-            log.error("Internal ex!");
+            log.error("Internal ex: {}", ex.getMessage());
             response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
             errorResponse = new ErrorResponse(500, ex.getMessage());
         }

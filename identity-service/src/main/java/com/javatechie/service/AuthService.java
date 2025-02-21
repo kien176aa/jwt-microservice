@@ -14,6 +14,7 @@ import org.example.dtos.UserDto;
 import org.example.exception.RecordExistException;
 import org.example.exception.UnAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,8 @@ public class AuthService {
     private JwtService jwtService;
     @Autowired
     private UrlAccessService urlAccessService;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public UserDto saveUser(UserDto credential) throws RecordExistException {
         User user = repository.findByEmail(credential.getEmail());
@@ -72,7 +75,7 @@ public class AuthService {
                                 matchesUrl(request.getUrl(), access.getUrl()));
 
         if (!hasPermission) {
-            throw new PermissionException("You do not have permission to access this resource");
+            throw new PermissionException(ErrorMessage.PERMISSION_DENY);
         }
     }
 
@@ -95,7 +98,17 @@ public class AuthService {
         if(user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())){
             throw new Exception(ErrorMessage.INVALID_EMAIL_PASSWORD);
         }
-        return generateToken(request.getEmail());
+        String token = generateToken(request.getEmail());
+        redisTemplate.opsForValue().set("USER_" + token, setUserDto(user));
+        return token;
+    }
+
+    private UserDto setUserDto(User user) {
+        UserDto dto = new UserDto();
+        dto.setEmail(user.getEmail());
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        return dto;
     }
 
     public Object changeStatus(Long id) throws Exception {

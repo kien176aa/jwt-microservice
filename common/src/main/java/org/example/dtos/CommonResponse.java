@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CommonResponse<T> implements Serializable {
-        private T data;
+    private T data;
     private Integer statusCode;
     private String message;
     public CommonResponse(T data, Integer statusCode, String message) {
@@ -29,5 +29,13 @@ public class CommonResponse<T> implements Serializable {
 
     public static <T> CommonResponse<T> notOk(T data) {
         return new CommonResponse<>(data, HttpStatus.BAD_REQUEST.value(), "error");
+    }
+
+    public static <T> CommonResponse<T> notFound(T data) {
+        return new CommonResponse<>(data, HttpStatus.NOT_FOUND.value(), "error");
+    }
+
+    public static <T> CommonResponse<T> unAuth(T data) {
+        return new CommonResponse<>(data, HttpStatus.UNAUTHORIZED.value(), "error");
     }
 }

@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: SWIGGY-APP
+  kafka:
+    bootstrap-servers: localhost:9092
 
 eureka:
   client:
