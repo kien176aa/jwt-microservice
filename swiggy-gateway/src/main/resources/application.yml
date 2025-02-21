@@ -5,12 +5,12 @@ spring:
        - id: swiggy-app
          uri: lb://SWIGGY-APP
          predicates:
-           - Path=/swiggy/**
+           - Path=/swiggy/**, /orders/**
          filters:
            - AuthenticationFilter
 
 
-       - id: restaurant-service
+       - id: product-service
          uri: lb://PRODUCT-SERVICE
          predicates:
            - Path=/products/**
