@@ -1,4 +1,4 @@
-package com.javatechie.clients;
+package com.javatechie.client;
 
 import org.example.constants.ConstantValue;
 import org.example.dtos.CommonResponse;

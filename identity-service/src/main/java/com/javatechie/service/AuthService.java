@@ -62,6 +62,7 @@ public class AuthService {
                 .anyMatch(access ->
                         ConstantValue.ALLOW_URL.contains(access.getRole()) &&
                                 matchesUrl(request.getUrl(), access.getUrl()));
+        log.info("noNeedToCheck: {}, url: {}", noNeedToCheck, request.getUrl());
         if (noNeedToCheck) {
             log.info("noNeedToCheck {}", request.getUrl());
             return;
@@ -99,11 +100,11 @@ public class AuthService {
             throw new Exception(ErrorMessage.INVALID_EMAIL_PASSWORD);
         }
         String token = generateToken(request.getEmail());
-        redisTemplate.opsForValue().set("USER_" + token, setUserDto(user));
+//        redisTemplate.opsForValue().set("USER_" + token, setUserDto(user));
         return token;
     }
 
-    private UserDto setUserDto(User user) {
+    public UserDto setUserDto(User user) {
         UserDto dto = new UserDto();
         dto.setEmail(user.getEmail());
         dto.setId(user.getId());

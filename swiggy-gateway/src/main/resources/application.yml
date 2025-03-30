@@ -1,33 +1,43 @@
 spring:
- cloud:
-   gateway:
-     routes:
-       - id: swiggy-app
-         uri: lb://SWIGGY-APP
-         predicates:
-           - Path=/swiggy/**, /orders/**
-         filters:
-           - AuthenticationFilter
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"       # Cho phép tất cả domain
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"         # Cho phép tất cả các header
+      routes:
+        - id: swiggy-app
+          uri: lb://SWIGGY-APP
+          predicates:
+            - Path=/swiggy/**, /orders/**
+          filters:
+            - AuthenticationFilter
 
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/products/**
+          filters:
+            - AuthenticationFilter
 
-       - id: product-service
-         uri: lb://PRODUCT-SERVICE
-         predicates:
-           - Path=/products/**
-         filters:
-           - AuthenticationFilter
+        - id: identity-service
+          uri: lb://IDENTITY-SERVICE
+          predicates:
+            - Path=/auth/**, /users/**
+          filters:
+            - AuthenticationFilter
 
-       - id: identity-service
-         uri: lb://IDENTITY-SERVICE
-         predicates:
-           - Path=/auth/**, /users/**
-         filters:
-         - AuthenticationFilter
-
- application:
-   name: SWIGGY-GATEWAY
+application:
+  name: SWIGGY-GATEWAY
 
 eureka:
   client:
     service-url:
-      defaultZone : http://localhost:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/

@@ -1,6 +1,7 @@
 package com.javatechie.controller;
 
 import com.javatechie.dto.AuthRequest;
+import com.javatechie.entity.User;
 import com.javatechie.service.AuthService;
 import com.javatechie.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,16 +44,16 @@ public class AuthController {
     }
 
     @GetMapping("/current-user")
-    public CommonResponse<?> getCurrentUser(@RequestHeader("Authorization") String token) {
+    public CommonResponse<UserDto> getCurrentUser(@RequestHeader("Authorization") String token) {
         log.info("getCurrentUser 1: {}", token);
-        jwtService.validateToken(token);
         token = token.substring(7);
-        Object user = redisTemplate.opsForValue().get("USER_" + token);
+        jwtService.validateToken(token);
+        User user = jwtService.getCurrentUser(token);
         log.info("getCurrentUser 2: {}", user);
         if (user == null) {
-            return CommonResponse.unAuth(ErrorMessage.UN_AUTH2);
+            return CommonResponse.unAuth();
         }
-        return CommonResponse.ok(user);
+        return CommonResponse.ok(service.setUserDto(user));
     }
 
     @GetMapping("/test")

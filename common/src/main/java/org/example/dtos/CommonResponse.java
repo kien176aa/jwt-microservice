@@ -19,6 +19,11 @@ public class CommonResponse<T> implements Serializable {
         this.statusCode = statusCode;
         this.message = message;
     }
+
+    public CommonResponse(Integer statusCode, String message) {
+        this.statusCode = statusCode;
+        this.message = message;
+    }
     public static <T> CommonResponse<T> ok() {
         return new CommonResponse<>(null, HttpStatus.OK.value(), "success");
     }
@@ -35,7 +40,7 @@ public class CommonResponse<T> implements Serializable {
         return new CommonResponse<>(data, HttpStatus.NOT_FOUND.value(), "error");
     }
 
-    public static <T> CommonResponse<T> unAuth(T data) {
-        return new CommonResponse<>(data, HttpStatus.UNAUTHORIZED.value(), "error");
+    public static <T> CommonResponse<T> unAuth() {
+        return new CommonResponse<>(HttpStatus.UNAUTHORIZED.value(), "error");
     }
 }

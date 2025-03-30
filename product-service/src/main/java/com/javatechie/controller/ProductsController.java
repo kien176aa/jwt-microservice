@@ -9,6 +9,7 @@ import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
 import org.example.dtos.UserDto;
+import org.example.exception.UnAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,22 +58,45 @@ public class ProductsController {
 
     @PostMapping("/add-to-cart")
     public CommonResponse<?> addToCart(@RequestHeader("Authorization") String token, @RequestBody CartItemDto item) {
-//        CommonResponse<?> response = identityClient.getCurrentUser(token);
-//        if(response.getStatusCode() != HttpStatus.OK.value() || response.getData() == null) {
-//            log.error("invalid token???");
-//            return CommonResponse.unAuth(ErrorMessage.UN_AUTH2);
-//        }
-//        item.setUserId(((UserDto)response.getData()).getId());
+        log.info("AddToCart1: {}", item);
+        CommonResponse<?> response = identityClient.getCurrentUser(token);
+        log.info("AddToCart2: {}", response);
+        if(response.getStatusCode() != HttpStatus.OK.value() || response.getData() == null) {
+            log.error("invalid token???");
+            return CommonResponse.unAuth();
+        }
+        if(response.getData() instanceof UserDto) {
+            item.setUserId(((UserDto) response.getData()).getId());
+        } else{
+          log.info(response.getData().getClass().getName());
+        }
         return CommonResponse.ok(productService.addToCart(item));
     }
 
     @GetMapping("/get-by-user/{userId}")
     public CommonResponse<?> getProductByUserId(@PathVariable Long userId){
+        log.info("getProductByUserId: {}", userId);
         return CommonResponse.ok(productService.getProductByUserId(userId));
     }
 
+    @GetMapping("/my-cart")
+    public CommonResponse<?> getProductByMyCart(@RequestHeader("Authorization") String token){
+        CommonResponse<?> response = identityClient.getCurrentUser(token);
+        log.info("AddToCart2: {}", response);
+        if(response.getStatusCode() != HttpStatus.OK.value() || response.getData() == null) {
+            log.error("invalid token???");
+            return CommonResponse.unAuth();
+        }
+        if(response.getData() instanceof UserDto) {
+            return CommonResponse.ok(productService.getProductByUserId(((UserDto) response.getData()).getId()));
+        } else{
+            log.info(response.getData().getClass().getName());
+            throw new UnAuthException();
+        }
+    }
+
     @PostMapping("/decrease-stock")
-    CommonResponse<Boolean> decreaseStock(@RequestBody List<CartItemDto> cartItems) throws Exception {
+    CommonResponse<String> decreaseStock(@RequestBody List<CartItemDto> cartItems) throws Exception {
         log.info("start decreaseStock: {}", cartItems);
         return CommonResponse.ok(productService.decreaseStock(cartItems));
     }
