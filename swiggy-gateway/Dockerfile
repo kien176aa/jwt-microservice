@@ -5,8 +5,8 @@ WORKDIR /app
 COPY common ./common
 RUN cd common && mvn clean install -DskipTests
 
-# Stage 2: Build swiggy-gateway
-FROM maven:3.9.1-amazoncorretto-19 AS swiggy-app-builder
+# Stage 2: Build swiggy-app
+FROM maven:3.9.1-amazoncorretto-19 AS gateway-builder
 
 WORKDIR /app
 COPY swiggy-gateway/src ./src
@@ -21,6 +21,6 @@ RUN mvn clean package -DskipTests
 FROM openjdk:19-jdk-slim
 
 WORKDIR /app
-COPY --from=swiggy-gateway-builder /app/target/*.jar app.jar
+COPY --from=gateway-builder /app/target/*.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

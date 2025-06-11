@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: swiggy-gateway
   cloud:
     gateway:
       globalcors:
@@ -13,8 +15,8 @@ spring:
               - OPTIONS
             allowedHeaders: "*"         # Cho phép tất cả các header
       routes:
-        - id: swiggy-app
-          uri: lb://SWIGGY-APP
+        - id: order-service
+          uri: lb://ORDER-SERVICE
           predicates:
             - Path=/swiggy/**, /orders/**
           filters:
@@ -33,11 +35,7 @@ spring:
             - Path=/auth/**, /users/**
           filters:
             - AuthenticationFilter
-
-application:
-  name: SWIGGY-GATEWAY
-
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_DEFAULT_ZONE}

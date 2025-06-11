@@ -9,38 +9,109 @@ services:
       MYSQL_DATABASE: javatechie
     ports:
       - "3306:3306"
-  
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+
   frontend-service:
     container_name: frontend
     image: frontend:v1
     ports:
       - "3000:80"
 
+  identity-service:
+    container_name: identity-service
+    build:
+      context: .
+      dockerfile: identity-service/Dockerfile
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: javatechie
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      SPRING_APPLICATION_NAME: IDENTITY-SERVICE
+      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      SERVER_PORT: 9898
+    ports:
+      - "9898:9898"
+
   product-service:
     container_name: product-service
-    image: product-service:v2
+    build:
+      context: .
+      dockerfile: product-service/Dockerfile
     depends_on:
       - mysql
       - kafka
     environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=javatechie
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - EUREKA_DEFAULT_ZONE=http://eureka:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: javatechie
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
     ports:
       - "8082:8082"
 
+  notification-service:
+    container_name: notification-service
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      KAFKA_GROUP_ID: notification-group
+    ports:
+      - "8083:8083"
+
+  order-service:
+    container_name: order-service
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: javatechie
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "8081:8081"
+
+  swiggy-gateway:
+    container_name: swiggy-gateway
+    build:
+      context: .
+      dockerfile: swiggy-gateway/Dockerfile
+    depends_on:
+      - eureka
+      - order-service
+      - product-service
+      - identity-service
+    environment:
+      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+    ports:
+      - "8080:8080"
 
   eureka:
-    image: eureka:v1  
+    image: eureka:v1
     container_name: eureka-server
     environment:
-      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
-      - EUREKA_CLIENT_FETCH_REGISTRY=false
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
+      EUREKA_CLIENT_FETCH_REGISTRY: false
     ports:
       - "8761:8761"
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper
@@ -56,34 +127,14 @@ services:
     container_name: kafka
     restart: always
     depends_on:
-     - zookeeper
+      - zookeeper
     ports:
       - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-
-  # kafka:
-  #   image: confluentinc/cp-kafka:latest
-  #   container_name: kafka
-  #   restart: always
-  #   depends_on:
-  #     - zookeeper
-  #   ports:
-  #     - "9092:9092"
-  #     - "29092:29092"
-  #   environment:
-  #     KAFKA_BROKER_ID: 1
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
-  #     KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT # Chỉ định protocol bảo mật cho cả hai listeners
-  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
-  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-  

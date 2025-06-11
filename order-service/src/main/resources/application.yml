@@ -1,0 +1,12 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: ORDER-SERVICE
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+eureka:
+  client:
+    service-url:
+      defaultZone : ${EUREKA_DEFAULT_ZONE}
