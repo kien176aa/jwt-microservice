@@ -5,7 +5,7 @@ import com.javatechie.entity.Order;
 import com.javatechie.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.StringUtils;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
 import org.example.dtos.OrderDto;
@@ -30,7 +30,7 @@ public class OrderConsumer {
         log.info("Processing order: " + order);
         CommonResponse<?> response = productClient.decreaseStock(order.getCartItems());
         log.info("decreaseStock: {}", response);
-        if (response.getStatusCode() == HttpStatus.OK.value() && StringUtils.EMPTY.equals(response.getData())) {
+        if (response.getStatusCode() == HttpStatus.OK.value() && "".equals(response.getData())) {
             order.setStatus("COMPLETED");
         } else {
             order.setStatus("FAILED");

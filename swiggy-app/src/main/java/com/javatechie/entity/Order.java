@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang.StringUtils;
 import org.example.dtos.OrderDto;
 import org.example.utils.JsonUtil;
 
@@ -35,7 +34,7 @@ public class Order {
         try {
             cartItemsJson = JsonUtil.toJson(dto.getCartItems());
         } catch (JsonProcessingException e) {
-            cartItemsJson = StringUtils.EMPTY;
+            cartItemsJson = "";
         }
     }
 }

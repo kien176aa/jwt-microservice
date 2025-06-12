@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -72,8 +73,9 @@ public class OrderController {
         return CommonResponse.ok("Order placed successfully, processing...");
     }
 
-    @GetMapping("/my-order")
-    public CommonResponse<List<OrderResponse>> myOrder(@RequestHeader("Authorization") String token) {
+    @PostMapping("/my-order")
+    public CommonResponse<SearchResponse<List<OrderResponse>>> myOrder(@RequestHeader("Authorization") String token,
+                                                                       @RequestBody SearchRequest<String, Order> request) {
         CommonResponse<?> authResponse = identityClient.getCurrentUser(token);
         log.info("myOrder: {}", authResponse);
         if(authResponse.getStatusCode() != HttpStatus.OK.value() || authResponse.getData() == null) {
@@ -88,9 +90,9 @@ public class OrderController {
             return CommonResponse.unAuth();
         }
         log.info("start myOrder: {}", userId);
-        List<Order> orders = orderRepository.findByUserId(userId);
-
-        return CommonResponse.ok(orders.stream().map(item -> new OrderResponse(
+        Page<Order> orders = orderRepository.findByUserIdWithPage(userId, request.getPageable(Order.class));
+        SearchResponse<List<OrderResponse>> response = new SearchResponse<>();
+        response.setData(orders.getContent().stream().map(item -> new OrderResponse(
                 item.getId(),
                 item.getUserId(),
                 item.getOrderDate(),
@@ -98,6 +100,10 @@ public class OrderController {
                 item.getStatus(),
                 item.getCartItemsJson()
         )).toList());
+        response.setPageSize(request.getPageSize());
+        response.setPageIndex(request.getPageIndex());
+        response.setTotalRecords(orders.getTotalElements());
+        return CommonResponse.ok(response);
     }
 
 

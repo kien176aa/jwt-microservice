@@ -7,7 +7,7 @@ import com.javatechie.entity.Product;
 import com.javatechie.repository.CartItemRepository;
 import com.javatechie.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.StringUtils;
 import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
@@ -119,7 +119,7 @@ public class ProductService {
             }
             cartItemRepository.deleteByIds(cartItems.stream().map(CartItemDto::getProductId).toList(), cartItems.get(0).getUserId());
             productRepository.saveAll(products);
-            return StringUtils.EMPTY;
+            return "";
         }catch(Exception ex){
             log.info("decreaseStock ex: {}", ex.getMessage());
             throw new Exception(ex.getMessage());

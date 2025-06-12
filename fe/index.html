@@ -83,10 +83,10 @@
 <!-- My Orders -->
 <div class="container mt-5">
     <h3>My Orders</h3>
-    <div id="myOrders"></div>
     <nav>
         <ul class="pagination" id="ordersPagination"></ul>
     </nav>
+    <div id="myOrders"></div>
 </div>
 
 <!-- Login Modal -->
@@ -229,7 +229,7 @@
     // Các biến phân trang cho sản phẩm
     let currentPageProducts = 1, itemsPerPageProducts = 8;
     // Các biến phân trang cho đơn hàng
-    let currentPageOrders = 1, itemsPerPageOrders = 4;
+    let currentPageOrders = 1, itemsPerPageOrders = 4000, totalRecords = 0;
 
     $(document).ready(function() {
         const API_BASE = "http://localhost:8080";
@@ -384,18 +384,119 @@
             });
         });
 
+        function renderPagination(response, id, callbackFunc) {
+            const {totalRecords, pageIndex, pageSize} = response;
+            console.log("starting pagination", totalRecords, pageIndex, pageSize, id);
+            const totalPages = Math.ceil(totalRecords / pageSize);
+            console.log('total pages: ', totalPages);
+            const $pagination = $(id);
+            $pagination.empty();
+
+            if (totalPages <= 1) return;
+
+            $pagination.append(`
+        <li class="page-item first ${pageIndex === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="javascript:void(0);" data-page="1">
+                <<
+            </a>
+        </li>
+        <li class="page-item prev ${pageIndex === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="javascript:void(0);" data-page="${pageIndex - 1}">
+                <
+            </a>
+        </li>
+    `);
+
+            let startPage = Math.max(1, pageIndex - 2);
+            let endPage = Math.min(totalPages, pageIndex + 2);
+
+            if (startPage > 1) {
+                $pagination.append(`<li class="page-item"><a class="page-link" href="javascript:void(0);" data-page="1">1</a></li>`);
+                if (startPage > 2) {
+                    $pagination.append(`<li class="page-item disabled"><span class="page-link">...</span></li>`);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                $pagination.append(`
+            <li class="page-item ${i === pageIndex ? 'active' : ''}">
+                <a class="page-link" href="javascript:void(0);" data-page="${i}">${i}</a>
+            </li>
+        `);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    $pagination.append(`<li class="page-item disabled"><span class="page-link">...</span></li>`);
+                }
+                $pagination.append(`<li class="page-item"><a class="page-link" href="javascript:void(0);" data-page="${totalPages}">${totalPages}</a></li>`);
+            }
+
+            // Tạo nút "Next" và "Last"
+            $pagination.append(`
+        <li class="page-item next ${pageIndex === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="javascript:void(0);" data-page="${pageIndex + 1}">
+                >
+            </a>
+        </li>
+        <li class="page-item last ${pageIndex === totalPages ? 'disabled' : ''}">
+            <a class="page-link" href="javascript:void(0);" data-page="${totalPages}">
+                >>
+            </a>
+        </li>
+    `);
+
+            // Sự kiện click thay đổi trang
+            $('.pagination .page-link').on('click', function () {
+                const newPage = parseInt($(this).data('page'));
+                if (!isNaN(newPage) && newPage !== pageIndex) {
+                    callbackFunc(totalRecords, newPage, pageSize);
+                }
+            });
+            console.log("end pagination");
+        }
+
+
+
         // Hàm loadMyOrders() với phân trang cho đơn hàng
         function loadMyOrders(){
             if(!token)
                 return;
+            let spinner = `
+    <div id="myOrdersSpinner" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+`;
+            $("#myOrders").html(spinner);
             $.ajax({
                 url: `${API_BASE}/orders/my-order`,
-                method: "GET",
+                method: "POST",
                 headers: { 'Authorization': `Bearer ${token}` },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    condition: '',
+                    pageIndex: currentPageOrders,
+                    pageSize: itemsPerPageOrders
+                }),
                 success: function(response) {
-                    orders = response.data;
-                    currentPageOrders = 1;
+                    orders = response.data.data;
+                    currentPageOrders = response.data.pageIndex;
+                    itemsPerPageOrders = response.data.pageSize;
+                    totalRecords = response.data.totalRecords;
                     renderOrders();
+                    renderPagination(response.data, '#ordersPagination', changePageIndex);
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching orders:", error);
@@ -404,10 +505,15 @@
             });
         }
 
+        function changePageIndex(totalRecords, newPage, pageSize){
+            currentPageOrders = newPage;
+            loadMyOrders();
+        }
+
         function renderOrders(){
             let start = (currentPageOrders - 1) * itemsPerPageOrders;
             let end = start + itemsPerPageOrders;
-            let paginatedOrders = orders.slice(start, end);
+            let paginatedOrders = orders;
             let html = "";
             if(paginatedOrders && paginatedOrders.length > 0){
                 paginatedOrders.forEach(order => {
@@ -456,23 +562,22 @@
                 html = "<p>No orders found.</p>";
             }
             $("#myOrders").html(html);
-            renderOrdersPagination();
         }
 
-        function renderOrdersPagination(){
-            let totalPages = Math.ceil(orders.length / itemsPerPageOrders);
-            let paginationHtml = "";
-            for(let i = 1; i <= totalPages; i++){
-                paginationHtml += `<li class="page-item ${i === currentPageOrders ? 'active' : ''}"><a class="page-link orders-page" href="#" data-page="${i}">${i}</a></li>`;
-            }
-            $("#ordersPagination").html(paginationHtml);
-        }
-
-        $(document).on("click", ".orders-page", function(e) {
-            e.preventDefault();
-            currentPageOrders = parseInt($(this).data("page"));
-            renderOrders();
-        });
+        // function renderOrdersPagination(){
+        //     let totalPages = Math.ceil(totalRecords / itemsPerPageOrders);
+        //     let paginationHtml = "";
+        //     for(let i = 1; i <= totalPages; i++){
+        //         paginationHtml += `<li class="page-item ${i === currentPageOrders ? 'active' : ''}"><a class="page-link orders-page" href="#" data-page="${i}">${i}</a></li>`;
+        //     }
+        //     $("#ordersPagination").html(paginationHtml);
+        // }
+        //
+        // $(document).off('click').on("click", ".orders-page", function(e) {
+        //     e.preventDefault();
+        //     currentPageOrders = parseInt($(this).data("page"));
+        //     loadMyOrders();
+        // });
 
         // Xử lý modal Product (Add/Edit)
         $("#addProductBtn").click(function() {

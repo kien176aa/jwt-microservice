@@ -14,21 +14,24 @@ spring:
             allowedHeaders: "*"         # Cho phép tất cả các header
       routes:
         - id: swiggy-app
-          uri: lb://SWIGGY-APP
+          uri: http://swiggy-app:8081     # Docker
+          # uri: http://localhost:8081        # Local development
           predicates:
             - Path=/swiggy/**, /orders/**
           filters:
             - AuthenticationFilter
 
         - id: product-service
-          uri: lb://PRODUCT-SERVICE
+#          uri: http://localhost:8082        # Local development
+          uri: http://product-service:8082 # Docker
           predicates:
             - Path=/products/**
           filters:
             - AuthenticationFilter
 
         - id: identity-service
-          uri: lb://IDENTITY-SERVICE
+#          uri: http://localhost:9898        # Local development
+          uri: http://identity-service:9898 # Docker
           predicates:
             - Path=/auth/**, /users/**
           filters:
@@ -37,7 +40,7 @@ spring:
 application:
   name: SWIGGY-GATEWAY
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/

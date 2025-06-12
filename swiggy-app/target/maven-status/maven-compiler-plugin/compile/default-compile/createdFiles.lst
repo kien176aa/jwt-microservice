@@ -1,6 +1,14 @@
+com\javatechie\client\ProductClient.class
+com\javatechie\consumer\OrderConsumer.class
+com\javatechie\config\KafkaConsumerConfig.class
+com\javatechie\client\IdentityClient.class
+com\javatechie\SwiggyAppApplication.class
+com\javatechie\config\SwiggyAppConfig.class
+com\javatechie\entity\Order.class
+com\javatechie\config\KafkaProducerConfig.class
 com\javatechie\service\SwiggyAppService.class
+com\javatechie\controller\OrderController.class
+com\javatechie\repository\OrderRepository.class
 com\javatechie\client\RestaurantServiceClient.class
 com\javatechie\controller\SwiggyAppController.class
 com\javatechie\dto\OrderResponseDTO.class
-com\javatechie\SwiggyAppApplication.class
-com\javatechie\config\SwiggyAppConfig.class
