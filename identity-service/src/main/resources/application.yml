@@ -4,15 +4,13 @@ spring:
 
   data:
     redis:
-      host: redis
+      host: ${REDIS_HOST}
       port: 6379
-
 
 eureka:
   client:
     service-url:
-      defaultZone : ${EUREKA_DEFAULT_ZONE}  
-
+      defaultZone: ${EUREKA_DEFAULT_ZONE}
 
 server:
   port: 9898

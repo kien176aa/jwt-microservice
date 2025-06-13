@@ -12,13 +12,13 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./sql/url_access.sql:/docker-entrypoint-initdb.d/url_access.sql:ro
       - ./.docker/data/db:/var/lib/mysql
+      - ./sql/url_access.sql:/docker-entrypoint-initdb.d/url_access.sql
 
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: redis
+    container_name: redis-cache
     restart: always
     ports:
       - "6379:6379"
@@ -43,7 +43,7 @@ services:
 
   # Kafka
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     restart: always
     depends_on:
@@ -76,6 +76,7 @@ services:
       - mysql
     environment:
       MYSQL_HOST: mysql
+      REDIS_HOST: redis-cache
       MYSQL_PORT: 3306
       MYSQL_DATABASE: javatechie
       MYSQL_USER: root
