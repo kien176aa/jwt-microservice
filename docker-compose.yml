@@ -128,13 +128,11 @@ services:
       - "2181:2181"
 
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     restart: always
     depends_on:
       - zookeeper
-    networks:
-      - swiggy-network
     ports:
       - "9092:9092"
     environment:
@@ -144,10 +142,23 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      # …các biến khác như log retention…
-    healthcheck:
-      test: [ "CMD", "kafka-broker-api-versions", "--bootstrap-server", "kafka:9092" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+
+
+
+
+  # kafka:
+  #   image: confluentinc/cp-kafka:latest
+  #   container_name: kafka
+  #   restart: always
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     KAFKA_BROKER_ID: 1
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+  #     KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
