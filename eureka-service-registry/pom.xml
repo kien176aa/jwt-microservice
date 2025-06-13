@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.javatechie</groupId>
-	<artifactId>swiggy-service-registry</artifactId>
+	<artifactId>eureka-service-registry</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>swiggy-service-registry</name>
+	<name>eureka-service-registry</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>21</java.version>

@@ -1,26 +1,65 @@
-# Dockerfile cho product-service (đặt trong product-service/)
-FROM eclipse-temurin:21-jre
-
-# Tạo user non-root
-RUN addgroup --system spring && adduser --system spring --ingroup spring
+# Stage 1: Build common module
+FROM maven:3.9.9-amazoncorretto-21-debian-bookworm AS builder
 
 WORKDIR /app
+COPY common ./common
+RUN cd common && mvn clean install -DskipTests
 
-# Copy JAR file đã build (fat jar có chứa common)
-COPY target/*.jar app.jar
+# Stage 2: Build product-service
+FROM maven:3.9.9-amazoncorretto-21-debian-bookworm AS product-builder
 
-RUN chown spring:spring app.jar
+WORKDIR /app
+COPY product-service/src ./src
+COPY product-service/pom.xml .
 
-USER spring:spring
+# Copy installed dependencies (from stage 1, ~/.m2 if needed)
+COPY --from=builder /root/.m2 /root/.m2
 
-# Product service thường chạy trên port 8082
-EXPOSE 8082
+RUN mvn clean package -DskipTests
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8082/actuator/health || exit 1
+# Stage 3: Runtime image
+FROM openjdk:21-jdk-slim
 
-# JVM options
-ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC"
+WORKDIR /app
+COPY --from=product-builder /app/target/*.jar app.jar
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+# # Stage 1: Build common module
+# FROM maven:3.9.9-amazoncorretto-21-debian-bookworm AS builder
+
+# WORKDIR /app
+
+# # Cache dependencies in Maven to speed up build time for subsequent builds
+# COPY common/pom.xml ./common/pom.xml
+# RUN mvn dependency:go-offline -B
+
+# # Copy the 'common' module source code and build it
+# COPY common/src ./common/src
+# RUN cd common && mvn clean install -DskipTests
+
+# # Stage 2: Build product-service
+# FROM maven:3.9.9-amazoncorretto-21-debian-bookworm AS product-builder
+
+# WORKDIR /app
+
+# # Cache dependencies in Maven for product service to avoid re-downloading
+# COPY product-service/pom.xml ./product-service/pom.xml
+# RUN mvn dependency:go-offline -B
+
+# # Copy only the src files and build
+# COPY product-service/src ./product-service/src
+# COPY --from=builder /root/.m2 /root/.m2
+# RUN mvn clean package -DskipTests
+
+# # Stage 3: Runtime image
+# FROM openjdk:21-jdk-slim
+
+# WORKDIR /app
+
+# # Copy only the built .jar file from the product-builder stage to reduce image size
+# COPY --from=product-builder /app/target/*.jar app.jar
+
+# # Run the application
+# ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,19 +1,17 @@
 spring:
   application:
     name: IDENTITY-SERVICE
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:sql/url_access.sql
+
   data:
     redis:
       host: redis
       port: 6379
 
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone : http://localhost:8761/eureka/
+
+eureka:
+  client:
+    service-url:
+      defaultZone : ${EUREKA_DEFAULT_ZONE}  
 
 
 server:
