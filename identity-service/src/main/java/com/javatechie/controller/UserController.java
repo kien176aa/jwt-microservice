@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @Slf4j
@@ -26,5 +28,10 @@ public class UserController {
     public CommonResponse<?> create(@RequestBody UserDto req){
         log.info("Create user {}", req);
         return CommonResponse.ok(service.create(req));
+    }
+
+    @GetMapping("/get-random-users")
+    public CommonResponse<List<Long>> getRandomUsers() {
+        return CommonResponse.ok(service.getRandomUsers());
     }
 }

@@ -5,7 +5,7 @@ spring:
   application:
     name: PRODUCT-SERVICE
 
-eureka:
-  client:
-    service-url:
-      defaultZone : ${EUREKA_DEFAULT_ZONE}  
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone : ${EUREKA_DEFAULT_ZONE}

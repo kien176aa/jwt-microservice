@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +67,9 @@ public class OrderController {
         }
         System.out.println("Total Price: " + totalPrice);
 
-
-        OrderDto order = new OrderDto(null, userId, LocalDateTime.now(), totalPrice, "PENDING", selectedProducts);
+        BigDecimal roundedPrice = BigDecimal.valueOf(totalPrice).setScale(2, RoundingMode.HALF_UP);
+        OrderDto order = new OrderDto(null, userId, LocalDateTime.now(), roundedPrice.doubleValue(),
+                "PENDING", selectedProducts);
         log.info("Order info: {}", order);
         kafkaTemplate.send("order-topic", order);
 

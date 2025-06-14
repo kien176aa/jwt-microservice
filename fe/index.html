@@ -45,6 +45,40 @@
         .pagination {
             justify-content: center;
         }
+        /* Style 4: Icon with text on hover */
+        .remove-btn-style4 {
+            background: #fee2e2;
+            border: none;
+            color: #dc2626;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            overflow: hidden;
+            width: 36px;
+        }
+
+        .remove-btn-style4:hover {
+            background: #dc2626;
+            color: white;
+            width: auto;
+            padding-right: 12px;
+        }
+
+        .remove-btn-style4 .btn-text {
+            opacity: 0;
+            margin-left: 0px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .remove-btn-style4:hover .btn-text {
+            opacity: 1;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -206,23 +240,70 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
-    // WebSocket kết nối qua SockJS
-    var socket = new SockJS('http://localhost:8083/ws');
-    var stompClient = Stomp.over(socket);
-    stompClient.connect({}, function(frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/order-status', function(message) {
-            var order = JSON.parse(message.body);
-            if(order.status === "COMPLETED" || order.status === "") {
-                alert("Checkout successful! Order completed.");
-                location.reload();
-            } else {
-                alert(order.status);
+    // Enhanced WebSocket connection with better error handling and debugging
+    function connectSocket(token) {
+        console.log('Connecting WebSocket with token:', token);
+
+        var socket = new SockJS('http://localhost:8083/ws');
+        var stompClient = Stomp.over(socket);
+
+        // Enable debug mode
+        stompClient.debug = function(str) {
+            console.log('STOMP Debug: ' + str);
+        };
+
+        // Connection headers
+        var headers = {
+            'Authorization': 'Bearer ' + token
+        };
+
+        // Connect with error handling
+        stompClient.connect(headers,
+            function(frame) {
+                console.log('✓ WebSocket Connected: ' + frame);
+
+                // Subscribe to user-specific channel
+                stompClient.subscribe('/user/queue/order-status', function(message) {
+                    console.log('✓ Received user message:', message.body);
+                    var order = JSON.parse(message.body);
+                    console.log('✓ Parsed order:', order);
+
+                    if(order.status === "COMPLETED" || order.status === "") {
+                        alert("Checkout successful! Order completed.");
+                        location.reload();
+                    } else {
+                        alert(order.status);
+                    }
+                    $("#checkout").prop("disabled", false);
+                    $("#checkoutSpinner").remove();
+                });
+
+                // Also subscribe to broadcast channel for testing
+                // stompClient.subscribe('/topic/order-status-all', function(message) {
+                //     console.log('✓ Received broadcast message:', message.body);
+                //     var order = JSON.parse(message.body);
+                //     console.log('✓ Broadcast order:', order);
+                // });
+
+                console.log('✓ Subscriptions completed');
+            },
+            function(error) {
+                console.error('✗ WebSocket connection error:', error);
+                // Retry connection after 5 seconds
+                setTimeout(function() {
+                    console.log('Retrying WebSocket connection...');
+                    connectSocket(token);
+                }, 5000);
             }
-            $("#checkout").prop("disabled", false);
-            $("#checkoutSpinner").remove();
-        });
-    });
+        );
+
+        // Handle WebSocket close
+        socket.onclose = function(event) {
+            console.log('WebSocket closed:', event);
+        };
+
+        return stompClient;
+    }
 
     let products = [];
     let orders = [];
@@ -231,9 +312,48 @@
     // Các biến phân trang cho đơn hàng
     let currentPageOrders = 1, itemsPerPageOrders = 4000, totalRecords = 0;
 
+    // Hàm render menu vào div#navbarNav
+    function renderNavbarItems(hasToken) {
+
+        // Tạo phần <ul> chứa các item
+        let navHtml = `
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="#" id="view-products">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="#myOrders" id="my-orders-btn">My Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" id="cart-icon" data-bs-toggle="modal" data-bs-target="#cartModal">Cart</a></li>
+    `;
+
+        if (hasToken) {
+            navHtml += `
+            <li class="nav-item"><a class="nav-link" href="#" id="logout-btn">Logout</a></li>
+        `;
+        } else {
+            navHtml += `
+            <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
+            <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a></li>
+        `;
+        }
+
+        navHtml += `</ul>`;
+
+        // Render vào div#navbarNav
+        $('#navbarNav').html(navHtml);
+
+        // Gán sự kiện logout nếu có
+        $('#logout-btn').click(function (e) {
+            e.preventDefault();
+            document.cookie = "token=; Max-Age=0; path=/;";
+            location.reload();
+        });
+    }
+
     $(document).ready(function() {
         const API_BASE = "http://localhost:8080";
         let token = getCookie("token");
+        renderNavbarItems(token);
+        if(token){
+            connectSocket(token);
+        }
 
         function getCookie(name) {
             let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -314,13 +434,40 @@
                           <div class="d-flex align-items-center">
                             <input type="number" class="cart-quantity form-control me-2" data-id="${item.productId}" value="${item.quantity}" min="1" style="width:80px;">
                             <span>$${item.price}</span>
+                            <button class="remove-btn-style4 ms-3 remove-item-btn" title="Remove item" data-id="${item.productId}">
+                                <i class="fa-solid fa-trash"></i>
+                                <span class="btn-text">Remove</span>
+                            </button>
                           </div>
                         </li>`;
                     });
                     html += "</ul>";
                     $("#cart-content").html(html);
+                    addRemoveFromCartEvent();
                 }
             });
+        }
+
+        function addRemoveFromCartEvent(){
+            // Gắn sự kiện click cho nút xóa sau khi render
+            $('.remove-item-btn').off('click').on('click', function () {
+                const productId = $(this).data('id');
+
+                $.ajax({
+                    url: `${API_BASE}/products/remove-from-cart`,
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    data: { productId },
+                    success: function(response) {
+                        console.log('Removed product:', productId);
+                        loadCart(); // reload lại cart sau khi xóa
+                    },
+                    error: function(xhr) {
+                        alert('Lỗi khi xóa sản phẩm khỏi giỏ hàng!');
+                    }
+                });
+            });
+
         }
 
         $(document).on("click", ".add-to-cart", function() {
@@ -354,6 +501,10 @@
                 let quantity = parseInt($(`.cart-quantity[data-id='${id}']`).val(), 10);
                 selectedItems.push({ productId: id, quantity: quantity });
             });
+            if(!selectedItems || selectedItems.length === 0){
+                alert("Đặt hàng đi mày!!!!");
+                return;
+            }
 
             // Hiển thị animation loading trong modal cart
             let spinner = `<div id="checkoutSpinner" class="spinner-overlay">

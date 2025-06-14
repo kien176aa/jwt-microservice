@@ -12,12 +12,12 @@
 
     <modules>
         <module>common</module>
-        <module>swiggy-gateway</module>
+        <module>api-gateway</module>
         <module>product-service</module>
         <module>identity-service</module>
         <module>notification-service</module>
-        <module>swiggy-service-registry</module>
-        <module>swiggy-app</module>
+<!--        <module>swiggy-service-registry</module>-->
+        <module>order-service</module>
         <!-- nếu cần thì thêm fe -->
     </modules>
 

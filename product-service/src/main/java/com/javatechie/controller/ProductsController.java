@@ -73,6 +73,26 @@ public class ProductsController {
         return CommonResponse.ok(productService.addToCart(item));
     }
 
+    @DeleteMapping("/remove-from-cart")
+    public CommonResponse<?> removeFromCart(@RequestHeader("Authorization") String token, @RequestParam Long productId) {
+        log.info("RemoveFromCart1: {}", productId);
+        CommonResponse<?> response = identityClient.getCurrentUser(token);
+        log.info("RemoveFromCart2: {}", response);
+        if(response.getStatusCode() != HttpStatus.OK.value() || response.getData() == null) {
+            log.error("invalid token1???");
+            return CommonResponse.unAuth();
+        }
+        Long userId = null;
+        if(response.getData() instanceof UserDto) {
+            userId = (((UserDto) response.getData()).getId());
+        }else {
+            log.info(response.getData().getClass().getName());
+            log.error("invalid token2???");
+            return CommonResponse.unAuth();
+        }
+        return productService.removeFromCart(userId, productId);
+    }
+
     @GetMapping("/get-by-user/{userId}")
     public CommonResponse<?> getProductByUserId(@PathVariable Long userId){
         log.info("getProductByUserId: {}", userId);

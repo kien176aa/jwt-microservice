@@ -5,8 +5,8 @@ spring:
   application:
     name: ORDER-SERVICE
   kafka:
-    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
-eureka:
-  client:
-    service-url:
-      defaultZone : ${EUREKA_DEFAULT_ZONE}
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone : ${EUREKA_DEFAULT_ZONE}

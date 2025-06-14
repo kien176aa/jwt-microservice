@@ -126,5 +126,16 @@ public class ProductService {
         }
 
     }
+
+    @Transactional
+    public CommonResponse<String> removeFromCart(Long userId, Long productId) {
+        try {
+            cartItemRepository.deleteByUserIdAndProductId(userId, productId);
+            return CommonResponse.ok("ok");
+        } catch (Exception e) {
+            log.info("removeFromCart ex: {}", e.getMessage());
+            return CommonResponse.notOk(e.getMessage());
+        }
+    }
 }
 

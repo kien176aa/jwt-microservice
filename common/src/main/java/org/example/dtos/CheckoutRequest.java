@@ -11,4 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CheckoutRequest {
    private List<CartItemDto> selectedProducts;
+   private String socketId;
 }
