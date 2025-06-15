@@ -17,7 +17,7 @@ spring:
 #        uri: http://order-service:8081 # Docker
         uri: http://localhost:8081        # Local development
         predicates:
-        - Path=/swiggy/**, /orders/**
+        - Path=/swiggy/**, /orders/**, /vouchers/**
         filters:
         - AuthenticationFilter
 

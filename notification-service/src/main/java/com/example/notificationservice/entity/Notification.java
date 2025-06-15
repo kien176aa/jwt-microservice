@@ -1,4 +1,4 @@
-package com.javatechie.entity;
+package com.example.notificationservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,20 +8,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "vouchers")
+@Table(name = "notifications")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Voucher {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private String code;
-    private Double discountAmount;
-    private Double minPurchase;
-    private boolean isPercent;
+    private String title;
+    private String message;
     private LocalDateTime createdAt;
-    private LocalDateTime expiredAt;
-    private boolean used;
+    private boolean isRead;
 }

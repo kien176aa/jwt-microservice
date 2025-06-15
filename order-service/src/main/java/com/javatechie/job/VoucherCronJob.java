@@ -25,7 +25,7 @@ public class VoucherCronJob {
      * Cú pháp: second minute hour day-of-month month day-of-week
      */
 //    @Scheduled(cron = "0 0 0 2,4,6,8 * *", zone = ConstantValue.TIME_ZONE_ID)
-    @Scheduled(cron = "0 59 16 * * *", zone = ConstantValue.TIME_ZONE_ID)
+    @Scheduled(cron = "0 32 14 * * *", zone = ConstantValue.TIME_ZONE_ID)
     public void dailyGrantVoucher() {
         log.info("🔔 Bắt đầu tặng voucher cho tất cả user vào {}",
                 LocalDateTime.now(ZoneId.of(ConstantValue.TIME_ZONE_ID)));

@@ -5,17 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class NotificationDto {
     private Long id;
     private Long userId;
-    private LocalDateTime orderDate;
-    private double totalPrice;
-    private String status;
-    private List<CartItemDto> cartItems;
-    private VoucherDto voucher;
+    private String title;
+    private String message;
+    private LocalDateTime createdAt;
+    private boolean isRead;
 }

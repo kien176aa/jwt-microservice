@@ -1,20 +1,15 @@
-package com.javatechie.entity;
+package org.example.dtos;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "vouchers")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Voucher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class VoucherDto {
     private Long id;
     private Long userId;
     private String code;

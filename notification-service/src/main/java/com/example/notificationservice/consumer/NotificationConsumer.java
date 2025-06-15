@@ -1,14 +1,24 @@
 package com.example.notificationservice.consumer;
 
+import com.example.notificationservice.entity.Notification;
+import com.example.notificationservice.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.example.dtos.NotifyGrantVoucher;
 import org.example.dtos.OrderDto;
+import org.example.dtos.UserMessageDto;
+import org.example.dtos.VoucherDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -17,9 +27,31 @@ public class NotificationConsumer {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final SimpUserRegistry userRegistry;
+    private final NotificationRepository notificationRepository;
 
     @KafkaListener(topics = "notification-topic", groupId = "notification-group")
-    public void consumeOrderNotification(OrderDto order) {
+    public void consumeOrderNotification(Object message) {
+        log.info("Received order notification: " + message);
+        if(message instanceof ConsumerRecord record) {
+            if(record.value() instanceof OrderDto orderDto) {
+                processSendNotifyOrder(orderDto);
+            } else if (record.value() instanceof NotifyGrantVoucher notify) {
+                for (UserMessageDto userMessageDto : notify.getMessages()) {
+                    Notification notification = new Notification();
+                    notification.setUserId(userMessageDto.getUserId());
+                    notification.setMessage(userMessageDto.getMessage());
+                    notification.setTitle(notify.getTitle());
+                    notification.setRead(false);
+                    notification.setCreatedAt(LocalDateTime.now());
+                    notificationRepository.save(notification);
+                }
+            }
+        }
+
+
+    }
+
+    private void processSendNotifyOrder(OrderDto order) {
         log.info("=== KAFKA MESSAGE RECEIVED ===");
         log.info("Order: {}", order);
 
