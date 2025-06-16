@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.example.dtos.CommonResponse;
+import org.example.dtos.DecreaseStockRequest;
 import org.example.dtos.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +38,10 @@ public class OrderConsumer {
             if (mess instanceof ConsumerRecord record) {
                 if (record.value() instanceof OrderDto order) {
                     log.info("Processing order: " + order);
-                    CommonResponse<?> response = productClient.decreaseStock(order.getCartItems());
+                    CommonResponse<?> response = productClient.decreaseStock(new DecreaseStockRequest(
+                            order.getCartItems(),
+                            order.getTransactionId()
+                    ));
                     log.info("decreaseStock: {}", response);
                     if (response.getStatusCode() == HttpStatus.OK.value() && "".equals(response.getData())) {
                         order.setStatus("COMPLETED");

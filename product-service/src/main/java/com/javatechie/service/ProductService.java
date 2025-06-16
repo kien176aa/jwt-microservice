@@ -4,13 +4,16 @@ import com.javatechie.dto.ProductDto;
 import com.javatechie.dto.SearchProductRequest;
 import com.javatechie.entity.CartItem;
 import com.javatechie.entity.Product;
+import com.javatechie.entity.UpdateQuantityTransaction;
 import com.javatechie.repository.CartItemRepository;
 import com.javatechie.repository.ProductRepository;
+import com.javatechie.repository.UpdateQuantityTransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.commons.lang.StringUtils;
 import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
+import org.example.dtos.DecreaseStockRequest;
 import org.example.exception.NotFoundException;
 import org.example.exception.RecordExistException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 @Service
 @Slf4j
@@ -27,6 +31,10 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private CartItemRepository cartItemRepository;
+//    @Autowired
+//    private ProductAttributesRepository productAttributesRepository;
+    @Autowired
+    private UpdateQuantityTransactionRepository updateQuantityTransactionRepository;
 
     public ProductDto createProduct(ProductDto product) {
         Product existByName = productRepository.findByName(product.getName());
@@ -42,8 +50,22 @@ public class ProductService {
         pro.setStatus(true);
         productRepository.save(pro);
         product.setId(pro.getId());
+//        saveAttributes(product);
         return product;
     }
+
+//    private void saveAttributes(ProductDto product) {
+//        ProductAttributes attr = new ProductAttributes();
+//        attr.setId("attr-"+product.getId());
+//        attr.setProductId(product.getId());
+//        attr.setAttributes(new HashMap<>());
+//        if(product.getAttributes() != null){
+//            for (String key : product.getAttributes().keySet()) {
+//                attr.getAttributes().put(key, product.getAttributes().get(key));
+//            }
+//        }
+//        productAttributesRepository.save(attr);
+//    }
 
     public List<ProductDto> getAllProducts(SearchProductRequest request) {
         return productRepository.search(
@@ -65,6 +87,7 @@ public class ProductService {
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setStatus(updatedProduct.getStatus());
         productRepository.save(existingProduct);
+//        saveAttributes(updatedProduct);
         return updatedProduct;
     }
 
@@ -103,22 +126,36 @@ public class ProductService {
     }
 
     @Transactional
-    public String decreaseStock(List<CartItemDto> cartItems) throws Exception {
+    public String decreaseStock(DecreaseStockRequest request) throws Exception {
         try{
+            if(request == null || request.getCartItems() == null)
+                return "";
             List<Product> products = new ArrayList<>();
-            for (CartItemDto dto : cartItems) {
+            Long userId = request.getCartItems().getFirst().getUserId();
+            for (CartItemDto dto : request.getCartItems()) {
+                if(updateQuantityTransactionRepository
+                        .existsUpdateQuantityTransactionByTransactionId(request.getTransactionId())){
+                    continue;
+                }
                 Product product = getProductById(dto.getProductId());
                 if(product.getQuantity() == 0){
-                    return String.format("%s đã hết sản phẩm", product.getName());
+                    throw new Exception(String.format("%s đã hết sản phẩm", product.getName()));
                 }
                 if(product.getQuantity() < dto.getQuantity()){
-                    return String.format("%s chỉ còn %d sản phẩm", product.getName(), product.getQuantity());
+                    throw new Exception(String.format("%s chỉ còn %d sản phẩm", product.getName(), product.getQuantity()));
                 }
                 product.setQuantity(product.getQuantity() - dto.getQuantity());
                 products.add(product);
+                updateQuantityTransactionRepository.save(
+                        new UpdateQuantityTransaction(
+                                null, dto.getQuantity(), userId, product.getId(), request.getTransactionId()
+                        )
+                );
             }
-            cartItemRepository.deleteByIds(cartItems.stream().map(CartItemDto::getProductId).toList(), cartItems.get(0).getUserId());
+            cartItemRepository.deleteByIds(request.getCartItems().stream()
+                    .map(CartItemDto::getProductId).toList(), userId);
             productRepository.saveAll(products);
+
             return "";
         }catch(Exception ex){
             log.info("decreaseStock ex: {}", ex.getMessage());

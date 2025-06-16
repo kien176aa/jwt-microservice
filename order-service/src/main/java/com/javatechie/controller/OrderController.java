@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
@@ -72,7 +73,7 @@ public class OrderController {
         Voucher voucher = voucherService.finbById(request.getVoucherId(), totalPrice);
 
         OrderDto order = new OrderDto(null, userId, LocalDateTime.now(), totalPrice,
-                "PENDING", selectedProducts, setVoucher(voucher));
+                "PENDING", UUID.randomUUID().toString(), selectedProducts, setVoucher(voucher));
         log.info("Order info: {}", order);
         kafkaTemplate.send("order-topic", order);
 

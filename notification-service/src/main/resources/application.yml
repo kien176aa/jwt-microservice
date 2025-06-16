@@ -10,3 +10,6 @@ spring:
         spring.json.trusted.packages: "org.example.dtos"
 server:
   port: 8083
+
+identity-service:
+  url: http://${IDENTITY_SERVICE_URL:localhost}:9898

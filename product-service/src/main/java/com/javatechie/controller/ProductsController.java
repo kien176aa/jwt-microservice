@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
+import org.example.dtos.DecreaseStockRequest;
 import org.example.dtos.UserDto;
 import org.example.exception.UnAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,9 +117,9 @@ public class ProductsController {
     }
 
     @PostMapping("/decrease-stock")
-    CommonResponse<String> decreaseStock(@RequestBody List<CartItemDto> cartItems) throws Exception {
-        log.info("start decreaseStock: {}", cartItems);
-        return CommonResponse.ok(productService.decreaseStock(cartItems));
+    CommonResponse<String> decreaseStock(@RequestBody DecreaseStockRequest request) throws Exception {
+        log.info("start decreaseStock: {}", request);
+        return CommonResponse.ok(productService.decreaseStock(request));
     }
 }
 

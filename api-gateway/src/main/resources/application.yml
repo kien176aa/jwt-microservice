@@ -40,6 +40,9 @@ spring:
 application:
   name: API-GATEWAY
 
+identity-service:
+  validate-token-url: http://${identity-service:localhost}:9898/auth/validate
+
 #eureka:
 #  client:
 #    service-url:

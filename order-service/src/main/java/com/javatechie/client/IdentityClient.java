@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name = "identity-service", url = ConstantValue.URL_IDENTITY_SERVICE)
+@FeignClient(name = "identity-service", url = "${identity-service.url}")
 public interface IdentityClient {
 
     @GetMapping("/auth/current-user")

@@ -8,6 +8,7 @@ import org.example.constants.ErrorMessage;
 import org.example.dtos.CheckPermissionRequest;
 import org.example.dtos.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +23,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Autowired
     private RouteValidator validator;
-    @Autowired
-    private JwtUtil jwtUtil;
+
+    @Value("${identity-service.validate-token-url}")
+    private String URL_VALIDATE_TOKEN;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -53,7 +55,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
 //                    jwtUtil.validateToken(authHeader);
                     log.info("validate start: {}", exchange.getRequest().getURI().getPath());
-                    CommonResponse<?> response = restTemplate.postForObject(ConstantValue.URL_VALIDATE_TOKEN,
+                    CommonResponse<?> response = restTemplate.postForObject(URL_VALIDATE_TOKEN,
                             new CheckPermissionRequest(
                             authHeader,
                             exchange.getRequest().getURI().getPath()

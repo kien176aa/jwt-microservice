@@ -8,17 +8,14 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.example.dtos.NotifyGrantVoucher;
 import org.example.dtos.OrderDto;
 import org.example.dtos.UserMessageDto;
-import org.example.dtos.VoucherDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,6 +27,7 @@ public class NotificationConsumer {
     private final NotificationRepository notificationRepository;
 
     @KafkaListener(topics = "notification-topic", groupId = "notification-group")
+    @Transactional
     public void consumeOrderNotification(Object message) {
         log.info("Received order notification: " + message);
         if(message instanceof ConsumerRecord record) {
@@ -71,6 +69,9 @@ public class NotificationConsumer {
             log.info("Sending to user: {} at destination: /topic/order-status", userId);
             messagingTemplate.convertAndSendToUser(userId, "queue/order-status", order);
             log.info("✓ Message sent to user successfully");
+            if (order.getVoucher() != null && order.getVoucher().getId() != null) {
+                notificationRepository.updateStatusNotify(order.getVoucher().getId());
+            }
 
         } catch (Exception e) {
             log.error("✗ Error sending WebSocket message: {}", e.getMessage(), e);

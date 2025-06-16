@@ -6,6 +6,11 @@ spring:
     name: ORDER-SERVICE
   kafka:
     bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
+
+identity-service:
+  url: http://${IDENTITY_SERVICE_URL:localhost}:9898
+product-service:
+  url: http://${PRODUCT_SERVICE_URL:localhost}:8082
 #eureka:
 #  client:
 #    service-url:

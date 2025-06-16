@@ -1211,60 +1211,6 @@
     `);
     }
 
-    // Hàm demo tạo thông báo test với UI đẹp
-    function createTestNotifications() {
-        return [
-            {
-                id: 1,
-                title: "🎉 Đơn hàng mới",
-                message: "Bạn có một đơn hàng mới #DH12345 từ khách hàng Nguyễn Văn A",
-                createdAt: new Date().toISOString(),
-                isRead: false,
-                type: 'ORDER'
-            },
-            {
-                id: 2,
-                title: "🎁 Voucher mới",
-                message: "Bạn đã nhận được voucher giảm giá 50.000đ cho đơn hàng tiếp theo",
-                createdAt: new Date(Date.now() - 300000).toISOString(),
-                isRead: false,
-                type: 'VOUCHER'
-            },
-            {
-                id: 3,
-                title: "✅ Thanh toán thành công",
-                message: "Đơn hàng #DH12340 đã được thanh toán thành công",
-                createdAt: new Date(Date.now() - 900000).toISOString(),
-                isRead: true,
-                type: 'ORDER'
-            },
-            {
-                id: 4,
-                title: "🔧 Cập nhật hệ thống",
-                message: "Hệ thống sẽ được bảo trì từ 2:00 - 4:00 sáng ngày mai",
-                createdAt: new Date(Date.now() - 1800000).toISOString(),
-                isRead: true,
-                type: 'SYSTEM'
-            }
-        ];
-    }
-
-    // Hàm test với UI đẹp
-    function testNotification() {
-        const testNotifications = createTestNotifications();
-
-        // Clear container và hiển thị notifications
-        $('#notifications-container').empty();
-
-        testNotifications.forEach(notification => {
-            const notificationHtml = createNotificationHtml(notification);
-            $('#notifications-container').append(notificationHtml);
-        });
-
-        // Cập nhật badge
-        updateNotificationBadge();
-    }
-
     // Utility function để format thời gian
     function getTimeAgo(dateString) {
         const now = new Date();
@@ -1680,8 +1626,6 @@
             });
             console.log("end pagination");
         }
-
-
 
         // Hàm loadMyOrders() với phân trang cho đơn hàng
         function loadMyOrders(){

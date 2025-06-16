@@ -9,11 +9,8 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto {
-    private Long id;
-    private String name;
-    private Double price;
-    private String image;
-    private Integer quantity;
+public class ProductAttributesDto {
+    private String id;
+    private Long productId;
     private Map<String, String> attributes;
 }
