@@ -2,12 +2,18 @@ package org.example.constants;
 
 import java.net.URI;
 
+@Component
 public class ConstantValue {
-    public static final String ALLOW_URL = "ALLOW_URL";
-//    public static final String URL_VALIDATE_TOKEN = "http://localhost:9898/auth/validate";
-//    public static final String URL_IDENTITY_SERVICE = "http://localhost:9898";
-//    public static final String URL_PRODUCT_SERVICE = "http://localhost:8082";
-    public static final String URL_VALIDATE_TOKEN = "http://identity-service:9898/auth/validate";
-    public static final String URL_IDENTITY_SERVICE = "http://identity-service:9898";
-    public static final String URL_PRODUCT_SERVICE = "http://product-service:8082";
+
+    @Value("${allow.url}")
+    public String ALLOW_URL;
+
+    @Value("${url.validate.token}")
+    public String URL_VALIDATE_TOKEN;
+
+    @Value("${url.identity.service}")
+    public String URL_IDENTITY_SERVICE;
+
+    @Value("${url.product.service}")
+    public String URL_PRODUCT_SERVICE;
 }

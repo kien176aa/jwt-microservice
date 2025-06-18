@@ -12,8 +12,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./.docker/data/db:/var/lib/mysql
-      - ./sql/url_access.sql:/docker-entrypoint-initdb.d/url_access.sql
+      - mysql_data:/var/lib/mysql
 
   # Redis Cache
   redis:
@@ -65,7 +64,7 @@ services:
       context: fe
       dockerfile: Dockerfile    
     ports:
-      - "3000:80"
+      - "3003:80"
 
   identity-service:
     container_name: identity-service
@@ -163,3 +162,6 @@ services:
       EUREKA_CLIENT_FETCH_REGISTRY: false
     ports:
       - "8761:8761"
+
+volumes:
+  mysql_data:
