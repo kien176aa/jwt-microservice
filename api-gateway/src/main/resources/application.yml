@@ -45,6 +45,11 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_DEFAULT_ZONE}
 
+url:
+  validate:
+    token: ${URL_VALIDATE_TOKEN}
+
+
 # spring:
 #   application:
 #     name: swiggy-gateway

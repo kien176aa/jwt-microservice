@@ -1,6 +1,5 @@
 package com.javatechie.client;
 
-import org.example.constants.ConstantValue;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient(name = "product-service", url = ConstantValue.URL_PRODUCT_SERVICE)
+@FeignClient(name = "product-service", url = "${url.product.service}")
 public interface ProductClient {
 
     @GetMapping("/products/get-by-user/{userId}")

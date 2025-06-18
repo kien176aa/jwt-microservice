@@ -83,6 +83,7 @@ services:
       SPRING_APPLICATION_NAME: IDENTITY-SERVICE
       EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
       SERVER_PORT: 9898
+      
     ports:
       - "9898:9898"
 
@@ -101,8 +102,10 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      URL_IDENTITY_SERVICE: http://identity-service:9898
     ports:
       - "8082:8082"
+
 
   notification-service:
     container_name: notification-service
@@ -134,6 +137,10 @@ services:
       MYSQL_DATABASE: javatechie
       MYSQL_USER: root
       MYSQL_PASSWORD: root
+      URL_IDENTITY_SERVICE: http://identity-service:9898
+      URL_PRODUCT_SERVICE: http://product-service:8082
+
+
     ports:
       - "8081:8081"
 
@@ -149,6 +156,7 @@ services:
       - identity-service
     environment:
       EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      URL_VALIDATE_TOKEN : http://identity-service:9898/auth/validate
     ports:
       - "8080:8080"
       
@@ -160,6 +168,7 @@ services:
     environment:
       EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
       EUREKA_CLIENT_FETCH_REGISTRY: false
+
     ports:
       - "8761:8761"
 

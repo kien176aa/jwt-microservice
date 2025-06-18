@@ -10,3 +10,10 @@ eureka:
   client:
     service-url:
       defaultZone : ${EUREKA_DEFAULT_ZONE}
+
+
+url:
+  identity:
+    service: ${URL_IDENTITY_SERVICE}
+  product:
+    service: ${URL_PRODUCT_SERVICE}
