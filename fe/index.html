@@ -207,7 +207,7 @@
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
     // WebSocket kết nối qua SockJS
-    var socket = new SockJS('http://localhost:8083/ws');
+    var socket = new SockJS('http://api.raydensolution.com/ws');
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         console.log('Connected: ' + frame);
@@ -232,7 +232,7 @@
     let currentPageOrders = 1, itemsPerPageOrders = 4000, totalRecords = 0;
 
     $(document).ready(function() {
-        const API_BASE = "http://localhost:8080";
+        const API_BASE = "http://api.raydensolution.com";
         let token = getCookie("token");
 
         function getCookie(name) {

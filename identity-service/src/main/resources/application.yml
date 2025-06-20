@@ -7,10 +7,10 @@ spring:
       host: ${REDIS_HOST}
       port: 6379
 
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:sql/url_access.sql
+  # sql:
+  #   init:
+  #     mode: always
+  #     data-locations: classpath:sql/url_access.sql
 
 eureka:
   client:

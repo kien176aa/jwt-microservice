@@ -81,7 +81,7 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       SPRING_APPLICATION_NAME: IDENTITY-SERVICE
-      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      # EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
       SERVER_PORT: 9898
       
     ports:
@@ -101,7 +101,7 @@ services:
       MYSQL_DATABASE: javatechie
       MYSQL_USER: root
       MYSQL_PASSWORD: root
-      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      # EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
       URL_IDENTITY_SERVICE: http://identity-service:9898
     ports:
       - "8082:8082"
@@ -131,7 +131,7 @@ services:
     environment:
       KAFKA_HOST: kafka
       KAFKA_PORT: 9092
-      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      # EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
       MYSQL_DATABASE: javatechie
@@ -139,38 +139,35 @@ services:
       MYSQL_PASSWORD: root
       URL_IDENTITY_SERVICE: http://identity-service:9898
       URL_PRODUCT_SERVICE: http://product-service:8082
-
-
     ports:
       - "8081:8081"
 
   api-gateway:
     container_name: api-gateway
-    build:
+    build: 
       context: .
       dockerfile: api-gateway/Dockerfile
     depends_on:
-      - eureka
       - order-service
       - product-service
       - identity-service
     environment:
-      EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      # EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
       URL_VALIDATE_TOKEN : http://identity-service:9898/auth/validate
     ports:
       - "8080:8080"
       
-  eureka:
-    build:
-      context: .
-      dockerfile: eureka-service-registry/Dockerfile
-    container_name: eureka-server
-    environment:
-      EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
-      EUREKA_CLIENT_FETCH_REGISTRY: false
+  # eureka:
+  #   build:
+  #     context: .
+  #     dockerfile: eureka-service-registry/Dockerfile
+  #   container_name: eureka-server
+  #   environment:
+  #     EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
+  #     EUREKA_CLIENT_FETCH_REGISTRY: false
 
-    ports:
-      - "8761:8761"
+  #   ports:
+  #     - "8761:8761"
 
 volumes:
   mysql_data:
