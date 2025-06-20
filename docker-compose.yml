@@ -154,6 +154,9 @@ services:
     environment:
       # EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
       URL_VALIDATE_TOKEN : http://identity-service:9898/auth/validate
+      ORDER_SERVICE_URI: http://order-service:8081
+      PRODUCT_SERVICE_URI: http://product-service:8082
+      URL_IDENTITY_SERVICE: http://identity-service:9898
     ports:
       - "8080:8080"
       

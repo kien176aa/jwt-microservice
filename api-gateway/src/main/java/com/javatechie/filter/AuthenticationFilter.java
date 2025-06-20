@@ -29,8 +29,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${url.validate.token}")
-    public String URL_VALIDATE_TOKEN;
+    @Value("${identity-service.validate-token-url}")
+    private String URL_VALIDATE_TOKEN;
 
 
     public AuthenticationFilter() {

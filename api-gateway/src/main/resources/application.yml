@@ -37,6 +37,5 @@ spring:
 application:
   name: API-GATEWAY
 
-url:
-  validate:
-    token: ${URL_VALIDATE_TOKEN}
+identity-service:
+  validate-token-url: ${URL_VALIDATE_TOKEN}
