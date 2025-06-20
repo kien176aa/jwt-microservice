@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UpdateQuantityTransactionRepository extends JpaRepository<UpdateQuantityTransaction, Long> {
-    boolean existsUpdateQuantityTransactionByTransactionId(String transactionId);
+    boolean existsUpdateQuantityTransactionByTransactionIdAndProductId(String transactionId, Long productId);
 }

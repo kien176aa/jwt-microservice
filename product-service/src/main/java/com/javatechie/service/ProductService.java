@@ -134,7 +134,10 @@ public class ProductService {
             Long userId = request.getCartItems().getFirst().getUserId();
             for (CartItemDto dto : request.getCartItems()) {
                 if(updateQuantityTransactionRepository
-                        .existsUpdateQuantityTransactionByTransactionId(request.getTransactionId())){
+                        .existsUpdateQuantityTransactionByTransactionIdAndProductId(
+                                request.getTransactionId(),
+                                dto.getProductId()
+                                )){
                     continue;
                 }
                 Product product = getProductById(dto.getProductId());
