@@ -82,7 +82,7 @@ services:
       MYSQL_PASSWORD: root
       SPRING_APPLICATION_NAME: IDENTITY-SERVICE
       # EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
-      SERVER_PORT: 9898
+      SERVER_PORT: 98 98
       
     ports:
       - "9898:9898"
