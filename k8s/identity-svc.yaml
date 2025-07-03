@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+  namespace: microsvc
+  annotations:
+    sidecar.opentelemetry.io/inject: "true"
+    instrumentation.opentelemetry.io/inject-java: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: identity-service
+  template:
+    metadata:
+      annotations:
+        sidecar.opentelemetry.io/inject: "true"
+        instrumentation.opentelemetry.io/inject-java: "true"
+      labels:
+        app: identity-service
+        framework: spring
+
+    spec:
+      containers:
+      - name: identity-service
+        image: datnd2711/microsv-identity-svc:latest
+        ports:
+        - containerPort: 9898
+        env:
+        - name: MYSQL_HOST
+          value: mysql
+        - name: REDIS_HOST
+          value: redis
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: javatechie
+        - name: SPRING_APPLICATION_NAME
+          value: IDENTITY-SERVICE
+        - name: SERVER_PORT
+          value: "9898"
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: common-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: common-secret
+              key: MYSQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+  namespace: microsvc
+
+spec:
+  selector:
+    app: identity-service
+  ports:
+  - protocol: TCP
+    port: 9898
+    targetPort: 9898
+  type: ClusterIP

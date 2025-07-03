@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: microsvc
+  annotations:
+    sidecar.opentelemetry.io/inject: "true"
+    instrumentation.opentelemetry.io/inject-java: "true"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      annotations:
+        sidecar.opentelemetry.io/inject: "true"
+        instrumentation.opentelemetry.io/inject-java: "true"
+      labels:
+        app: product-service
+        framework: spring
+
+    spec:
+      containers:
+      - name: product-service
+        image: datnd2711/microsv-product-svc:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: MYSQL_HOST
+          value: mysql
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: javatechie
+        - name: URL_IDENTITY_SERVICE
+          value: http://identity-service:9898
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: common-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: common-secret
+              key: MYSQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+  namespace: microsvc
+
+spec:
+  selector:
+    app: product-service
+  ports:
+  - protocol: TCP
+    port: 8082
+    targetPort: 8082
+  type: ClusterIP

@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ecom-app-ingress
+  namespace: microsvc
+
+spec:
+  ingressClassName: nginx
+
+  rules:
+  - host: ecom.datlaid.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ecom-frontend-service
+            port:
+              name: http-ecom-fe
