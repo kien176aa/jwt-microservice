@@ -7,7 +7,7 @@ metadata:
     sidecar.opentelemetry.io/inject: "true"
     instrumentation.opentelemetry.io/inject-java: "true"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: notification-service
@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: notification-service
-        image: datnd2711/microsv-noti-svc:latest
+        image: datnd2711/microsv-noti-svc:v5
         ports:
         - containerPort: 8083
         env:
@@ -49,3 +49,8 @@ spec:
     port: 8083
     targetPort: 8083
   type: ClusterIP
+  # Enable session affinity
+  # sessionAffinity: ClientIP
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800  # 3 hours
