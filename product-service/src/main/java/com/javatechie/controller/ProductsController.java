@@ -37,7 +37,7 @@ public class ProductsController {
     }
 
     @PostMapping ("/search")
-    public List<ProductDto> getAllProducts(SearchProductRequest request) {
+    public List<ProductDto> getAllProducts(@RequestBody SearchProductRequest request) {
         return productService.getAllProducts(request);
     }
 

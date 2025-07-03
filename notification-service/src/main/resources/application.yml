@@ -8,6 +8,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "org.example.dtos"
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
 server:
   port: 8083
 

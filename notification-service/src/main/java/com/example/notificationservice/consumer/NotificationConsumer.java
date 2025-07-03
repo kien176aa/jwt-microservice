@@ -2,6 +2,7 @@ package com.example.notificationservice.consumer;
 
 import com.example.notificationservice.entity.Notification;
 import com.example.notificationservice.repository.NotificationRepository;
+import com.example.notificationservice.service.RedisWebSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,8 +23,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class NotificationConsumer {
 
-    private final SimpMessagingTemplate messagingTemplate;
-    private final SimpUserRegistry userRegistry;
+    private final RedisWebSocketService redisWebSocketService;
     private final NotificationRepository notificationRepository;
 
     @KafkaListener(topics = "notification-topic", groupId = "notification-group")
@@ -45,8 +45,6 @@ public class NotificationConsumer {
                 }
             }
         }
-
-
     }
 
     private void processSendNotifyOrder(OrderDto order) {
@@ -61,14 +59,11 @@ public class NotificationConsumer {
         String userId = order.getUserId().toString();
         log.info("Processing notification for userId: {}", userId);
 
-        // Debug: Check active WebSocket sessions
-        debugActiveSessions(userId);
-
         try {
-            // Method 1: Send to specific user
-            log.info("Sending to user: {} at destination: /topic/order-status", userId);
-            messagingTemplate.convertAndSendToUser(userId, "queue/order-status", order);
-            log.info("✓ Message sent to user successfully");
+            // Use Redis service to send to user across all pods
+            redisWebSocketService.sendToUser(userId, "/queue/order-status", order);
+            log.info("✓ Message sent to user via Redis service");
+
             if (order.getVoucher() != null && order.getVoucher().getId() != null) {
                 notificationRepository.updateStatusNotify(order.getVoucher().getId());
             }
@@ -78,26 +73,5 @@ public class NotificationConsumer {
         }
 
         log.info("=== KAFKA MESSAGE PROCESSING COMPLETED ===");
-    }
-
-    private void debugActiveSessions(String userId) {
-        log.info("=== DEBUGGING WEBSOCKET SESSIONS ===");
-
-        // Get all active users
-        var users = userRegistry.getUsers();
-        log.info("Total active WebSocket users: {}", users.size());
-
-        for (SimpUser user : users) {
-            log.info("Active user: {} with {} sessions", user.getName(), user.getSessions().size());
-            if (userId.equals(user.getName())) {
-                user.getSessions().forEach(session -> {
-                    log.info("Session: {}", session);
-                });
-                log.info("✓ Target user {} found in active sessions!", userId);
-                return;
-            }
-        }
-
-        log.warn("✗ Target user {} NOT found in active sessions", userId);
     }
 }

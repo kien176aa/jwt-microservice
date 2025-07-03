@@ -1,0 +1,438 @@
+/* Additional z-index fixes for dropdown layers */
+.search-container {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    position: relative;
+    flex: 1;
+    margin: 0 12px;
+    z-index: 10;
+}
+
+.gitlab-header {
+    background: linear-gradient(135deg, #3107e6 0%, #4318ff 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 10;
+}
+
+.gitlab-header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    position: relative;
+    flex: 1;
+    margin: 0 12px;
+    z-index: 10;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    width: 100%;
+    padding: 0 12px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.search-input-wrapper:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-input-wrapper:focus-within {
+    border-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.search-input {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    padding: 12px 8px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-icon {
+    color: rgba(255, 255, 255, 0.8);
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.reset-icon {
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    display: none;
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.reset-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.reset-icon.visible {
+    display: block;
+}
+
+.active-filter {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin-right: 6px;
+    font-size: 13px;
+    color: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.active-filter:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.active-filter-label {
+    margin-right: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.active-filter-value {
+    font-weight: 600;
+}
+
+.dropdown-search-filters {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    margin-top: 8px;
+    z-index: 9999;
+    display: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+}
+
+.dropdown-search-filters.show {
+    display: block;
+    animation: fadeInUp 0.2s ease;
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    color: #333;
+}
+
+.filter-item:hover {
+    background-color: #f8f9fa;
+    color: #3107e6;
+}
+
+.filter-item:last-child {
+    border-bottom: none;
+}
+
+.filter-icon {
+    width: 24px;
+    text-align: center;
+    margin-right: 12px;
+    color: #666;
+}
+
+.filter-item:hover .filter-icon {
+    color: #3107e6;
+}
+
+.filter-label {
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.filter-item:hover .filter-label {
+    color: #3107e6;
+}
+
+.history-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    margin-right: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.history-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.btn-light {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-light:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-light:focus {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.dropdown-menu {
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    margin-top: 8px;
+    z-index: 9999;
+    position: absolute;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 10px 16px;
+    color: #333;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #3107e6;
+}
+
+.filter-chip {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin-right: 6px;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.filter-chip:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.filter-chip-value {
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.filter-chip-remove {
+    margin-left: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 2px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.filter-chip-remove:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    margin-top: 8px;
+    z-index: 9999;
+    display: none;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.filter-options.show {
+    display: block;
+    animation: fadeInUp 0.2s ease;
+}
+
+.filter-option-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    color: #333;
+}
+
+.filter-option-item:hover {
+    background-color: #f8f9fa;
+    color: #3107e6;
+}
+
+.filter-option-item:last-child {
+    border-bottom: none;
+}
+
+.custom-input-form {
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.custom-input-form select,
+.custom-input-form input {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #e1e5e9;
+    padding: 12px;
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.custom-input-form select:focus,
+.custom-input-form input:focus {
+    outline: none;
+    border-color: #3107e6;
+    box-shadow: 0 0 0 3px rgba(49, 7, 230, 0.1);
+}
+
+.custom-input-form button {
+    background: linear-gradient(135deg, #3107e6 0%, #4318ff 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.custom-input-form button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(49, 7, 230, 0.3);
+}
+
+.operator-select {
+    margin-bottom: 12px;
+}
+
+#sort-direction-btn {
+    margin-left: 4px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .gitlab-header {
+        padding: 8px 12px;
+    }
+
+    .search-container {
+        margin: 0 8px;
+    }
+
+    .d-flex.align-items-center {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .search-input-wrapper {
+        min-width: 250px;
+    }
+
+    .btn-light {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .history-button {
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gitlab-header .row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .search-container {
+        width: 100%;
+        margin: 0;
+    }
+
+    .search-input-wrapper {
+        min-width: 100%;
+    }
+}

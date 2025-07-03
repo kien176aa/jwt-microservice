@@ -68,9 +68,17 @@ public class ProductService {
 //    }
 
     public List<ProductDto> getAllProducts(SearchProductRequest request) {
-        return productRepository.search(
-                request.getStatus()
-        ).stream().map(ProductDto::new).toList();
+        return productRepository.searchWithOperators(
+                request.getName(),
+                request.getNameOp(),
+                request.getPrice(),
+                request.getPriceOp(),
+                request.getQuantity(),
+                request.getQuantityOp(),
+                request.getStatus(),
+                request.getSortBy(),
+                request.getOrderBy())
+                .stream().map(ProductDto::new).toList();
     }
 
     public Product getProductById(Long id) {

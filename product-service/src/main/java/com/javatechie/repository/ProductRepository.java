@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
     Product findByName(String name);
-    @Query("select p from Product p where :status is null or p.status = :status ")
-    List<Product> search(Boolean status);
 }
