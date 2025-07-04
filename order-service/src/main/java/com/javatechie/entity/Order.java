@@ -23,6 +23,7 @@ public class Order {
     private LocalDateTime orderDate;
     private double totalPrice;
     private String status;
+    private String voucherMess;
     @Column(columnDefinition = "TEXT")
     private String cartItemsJson;
 
@@ -31,6 +32,14 @@ public class Order {
         orderDate = dto.getOrderDate();
         status = dto.getStatus();
         totalPrice = dto.getTotalPrice();
+        if(dto.getVoucher() != null){
+            voucherMess = String.format("%s -%s%s%s",
+                    dto.getVoucher().getCode(),
+                    dto.getVoucher().isPercent() ? "" : "$",
+                    dto.getVoucher().getDiscountAmount(),
+                    dto.getVoucher().isPercent() ? "%" : ""
+            );
+        }
         try {
             cartItemsJson = JsonUtil.toJson(dto.getCartItems());
         } catch (JsonProcessingException e) {

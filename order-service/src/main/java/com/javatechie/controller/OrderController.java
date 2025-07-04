@@ -3,7 +3,9 @@ package com.javatechie.controller;
 import com.javatechie.client.IdentityClient;
 import com.javatechie.client.ProductClient;
 import com.javatechie.entity.Order;
+import com.javatechie.entity.Voucher;
 import com.javatechie.repository.OrderRepository;
+import com.javatechie.service.VoucherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dtos.*;
@@ -14,10 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
@@ -26,7 +31,8 @@ import java.util.Map;
 public class OrderController {
     private final ProductClient productClient;
     private final OrderRepository orderRepository;
-    private final KafkaTemplate<String, OrderDto> kafkaTemplate;
+    private final VoucherService voucherService;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     private IdentityClient identityClient;
 
@@ -64,13 +70,26 @@ public class OrderController {
             }
         }
         System.out.println("Total Price: " + totalPrice);
+        Voucher voucher = voucherService.finbById(request.getVoucherId(), totalPrice);
 
-
-        OrderDto order = new OrderDto(null, userId, LocalDateTime.now(), totalPrice, "PENDING", selectedProducts);
+        OrderDto order = new OrderDto(null, userId, LocalDateTime.now(), totalPrice,
+                "PENDING", UUID.randomUUID().toString(), selectedProducts, setVoucher(voucher));
         log.info("Order info: {}", order);
         kafkaTemplate.send("order-topic", order);
 
         return CommonResponse.ok("Order placed successfully, processing...");
+    }
+
+    private VoucherDto setVoucher(Voucher voucher) {
+        if (voucher == null) {
+            return null;
+        }
+        VoucherDto voucherDto = new VoucherDto();
+        voucherDto.setId(voucher.getId());
+        voucherDto.setCode(voucher.getCode());
+        voucherDto.setPercent(voucher.isPercent());
+        voucherDto.setDiscountAmount(voucher.getDiscountAmount());
+        return voucherDto;
     }
 
     @PostMapping("/my-order")
@@ -98,7 +117,8 @@ public class OrderController {
                 item.getOrderDate(),
                 item.getTotalPrice(),
                 item.getStatus(),
-                item.getCartItemsJson()
+                item.getCartItemsJson(),
+                item.getVoucherMess()
         )).toList());
         response.setPageSize(request.getPageSize());
         response.setPageIndex(request.getPageIndex());

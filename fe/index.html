@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="./search-gitlab.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -45,6 +47,476 @@
         .pagination {
             justify-content: center;
         }
+        /* Style 4: Icon with text on hover */
+        .remove-btn-style4 {
+            background: #fee2e2;
+            border: none;
+            color: #dc2626;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            overflow: hidden;
+            width: 36px;
+        }
+
+        .remove-btn-style4:hover {
+            background: #dc2626;
+            color: white;
+            width: auto;
+            padding-right: 12px;
+        }
+
+        .remove-btn-style4 .btn-text {
+            opacity: 0;
+            margin-left: 0px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .remove-btn-style4:hover .btn-text {
+            opacity: 1;
+            margin-left: 8px;
+        }
+
+        .message-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 350px;
+        }
+
+        .message-alert {
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+    </style>
+    <!--    css voucher start-->
+    <style>
+        .voucher-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+        }
+
+        .voucher-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        #selected-voucher {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 2px solid #28a745;
+            transition: all 0.3s ease;
+        }
+
+        #selected-voucher:hover {
+            background: #28a745;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+    </style>
+    <!--    css voucher end-->
+    <style>
+        /* Modern Notification UI Styles */
+        .notification-dropdown {
+            width: 380px;
+            max-height: 480px;
+            overflow-y: auto;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 0;
+            margin-top: 8px;
+        }
+
+        .notification-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .notification-dropdown::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .notification-dropdown::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .notification-dropdown::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .notification-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .notification-header h6 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .notification-header .btn {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .notification-header .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .notification-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 16px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: white;
+        }
+
+        .notification-item:hover {
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+            transform: translateX(4px);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item.unread {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            border-left: 4px solid #007bff;
+            position: relative;
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #007bff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .notification-item.read {
+            opacity: 0.85;
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .notification-icon.voucher {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+        }
+
+        .notification-icon.order {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+        }
+
+        .notification-icon.system {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            box-shadow: 0 4px 12px rgba(67, 233, 123, 0.3);
+        }
+
+        .notification-content {
+            flex: 1;
+            margin-left: 16px;
+        }
+
+        .notification-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            color: #6c757d;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(0, 123, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(238, 90, 82, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-3px);
+            }
+            60% {
+                transform: translateY(-2px);
+            }
+        }
+
+        .notification-footer {
+            padding: 16px 24px;
+            text-align: center;
+            background: #f8f9fa;
+            border-radius: 0 0 16px 16px;
+            border-top: 1px solid #e9ecef;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .notification-footer .btn {
+            color: #6c757d;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .notification-footer .btn:hover {
+            color: #007bff;
+            background: rgba(0, 123, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .notification-empty {
+            padding: 60px 24px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .notification-empty i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .notification-empty h6 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .notification-empty p {
+            font-size: 14px;
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        .notification-loading {
+            padding: 40px 24px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .notification-loading i {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #007bff;
+        }
+
+        .notification-error {
+            padding: 40px 24px;
+            text-align: center;
+            color: #dc3545;
+        }
+
+        .notification-error i {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        /* Bell icon animation */
+        .nav-link .fa-bell {
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover .fa-bell {
+            transform: rotate(15deg);
+            color: #007bff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .notification-dropdown {
+                width: 320px;
+                max-height: 400px;
+            }
+
+            .notification-header,
+            .notification-item,
+            .notification-footer {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .notification-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .notification-content {
+                margin-left: 12px;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .notification-dropdown {
+                background: #2d3748;
+                border: 1px solid #4a5568;
+            }
+
+            .notification-item {
+                background: #2d3748;
+                border-bottom-color: #4a5568;
+            }
+
+            .notification-item:hover {
+                background: #374151;
+            }
+
+            .notification-item.unread {
+                background: #1a202c;
+            }
+
+            .notification-title {
+                color: #f7fafc;
+            }
+
+            .notification-message {
+                color: #fafafa;
+                white-space: normal;
+                word-break: break-word;
+                overflow-wrap: break-word;
+            }
+
+            .notification-time {
+                color: #a0aec0;
+            }
+
+            .notification-footer {
+                background: #1a202c;
+                border-top-color: #4a5568;
+            }
+        }
     </style>
 </head>
 <body>
@@ -55,6 +527,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="#" id="view-products">Products</a></li>
@@ -66,6 +539,56 @@
         </div>
     </div>
 </nav>
+
+<div id="messageContainer" class="message-container"></div>
+
+<header class="gitlab-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12">
+                <div class="d-flex align-items-center">
+                    <button class="history-button">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </button>
+                    <div class="search-container">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-search search-icon"></i>
+                            <div id="active-filters" class="d-flex align-items-center"></div>
+                            <input autocomplete="off" type="text" class="search-input" id="gitlab-search" placeholder="Type to search...">
+                            <i class="fa-solid fa-times reset-icon" id="reset-search"></i>
+                        </div>
+                        <div class="dropdown-search-filters" id="search-filters">
+                            <!-- Các lọc sẽ được tạo động từ JS -->
+                        </div>
+                        <div class="filter-options" id="filter-options"></div>
+                    </div>
+                    <!-- <button class="btn btn-sm btn-light ms-2" id="clear-filters" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button> -->
+                    <button id="btnSearch" class="btn btn-sm btn-light ms-2" >
+                        <i class="fa-solid fa-search"></i>
+                    </button>
+                    <div class="dropdown ms-2" id="sort-container">
+                        <button class="btn btn-light btn-sm dropdown-toggle" type="button"
+                                id="sortDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="sort-label">Sort by</span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="sortDropdownButton" id="sort-dropdown-menu">
+                            <!-- Các item sort sẽ được thêm động -->
+                        </ul>
+                        <button id="sort-direction-btn" class="btn btn-light btn-sm ms-1">
+                            <i class="fa-solid fa-arrow-up-wide-short"></i> <!-- icon mặc định ascending -->
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</header>
+<div id="searchRequest"></div>
+
 
 <!-- Add Product Button -->
 <div class="container my-4">
@@ -202,93 +725,633 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voucherModalLabel">Danh sách Voucher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="voucherList">
+                    <!-- Các voucher sẽ được render tại đây -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="applyVoucherBtn">Áp dụng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- WebSocket Script -->
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<!--show mess start -->
 <script>
-    // WebSocket kết nối qua SockJS
-    var socket = new SockJS('http://noti.raydensolution.com/ws');
-    var stompClient = Stomp.over(socket);
-    stompClient.connect({}, function(frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/order-status', function(message) {
-            var order = JSON.parse(message.body);
-            if(order.status === "COMPLETED" || order.status === "") {
-                alert("Checkout successful! Order completed.");
-                location.reload();
-            } else {
-                alert(order.status);
-            }
-            $("#checkout").prop("disabled", false);
-            $("#checkoutSpinner").remove();
+    /**
+     * Hiển thị thông báo với Bootstrap Alert
+     * @param {string} message - Nội dung thông báo
+     * @param {string} type - Loại thông báo (success, danger, warning, info, primary, secondary, dark, light)
+     * @param {boolean} showCloseBtn - Hiển thị nút đóng (mặc định: false)
+     * @param {number} autoClose - Tự động đóng sau x giây (mặc định: 5 giây, 0 = không tự đóng)
+     */
+    function showMessage(message, type = 'success', showCloseBtn = false, autoClose = 5) {
+        // Tạo ID unique cho alert
+        const alertId = 'alert-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+
+        // Icon tương ứng với từng loại thông báo
+        const icons = {
+            success: '✓',
+            danger: '✗',
+            warning: '⚠',
+            info: 'ℹ',
+            primary: '●',
+            secondary: '●',
+            dark: '●',
+            light: '●'
+        };
+
+        // Tạo HTML cho alert
+        const alertHtml = `
+                <div id="${alertId}" class="alert alert-${type} message-alert fade-in" role="alert">
+                    <span class="me-2">${icons[type] || '●'}</span>
+                    <span>${message}</span>
+                    ${showCloseBtn ? '<button type="button" class="btn-close" onclick="closeMessage(\'' + alertId + '\')"></button>' : ''}
+                </div>
+            `;
+
+        // Thêm alert vào container
+        $('#messageContainer').append(alertHtml);
+
+        // Tự động đóng nếu được thiết lập
+        if (autoClose > 0) {
+            setTimeout(() => {
+                closeMessage(alertId);
+            }, autoClose * 1000);
+        }
+    }
+
+    /**
+     * Đóng thông báo
+     * @param {string} alertId - ID của alert cần đóng
+     */
+    function closeMessage(alertId) {
+        const alert = $('#' + alertId);
+        if (alert.length) {
+            alert.removeClass('fade-in').addClass('fade-out');
+            setTimeout(() => {
+                alert.remove();
+            }, 300);
+        }
+    }
+
+    /**
+     * Đóng tất cả thông báo
+     */
+    function closeAllMessages() {
+        $('.message-alert').each(function() {
+            closeMessage($(this).attr('id'));
         });
-    });
+    }
+
+    // Các hàm shortcut cho từng loại thông báo
+    function showSuccess(message, autoClose = 5) {
+        showMessage(message, 'success', false, autoClose);
+    }
+
+    function showError(message, autoClose = 5) {
+        showMessage(message, 'danger', false, autoClose);
+    }
+
+    function showWarning(message, autoClose = 5) {
+        showMessage(message, 'warning', false, autoClose);
+    }
+
+    function showInfo(message, autoClose = 5) {
+        showMessage(message, 'info', false, autoClose);
+    }
+
+    /**
+     * Hiển thị thông báo và reload trang sau một khoảng thời gian
+     * @param {string} message - Nội dung thông báo
+     * @param {string} type - Loại thông báo
+     * @param {number} delaySeconds - Số giây delay trước khi reload (mặc định: 3s)
+     */
+    function showMessageAndReload(message, type = 'success', delaySeconds = 3) {
+        // Hiển thị thông báo (không tự động đóng)
+        showMessage(message, type, false, 0);
+
+        // Reload sau delay
+        setTimeout(() => {
+            location.reload();
+        }, delaySeconds * 1000);
+    }
+
+    /**
+     * Shortcut functions với reload
+     */
+    function showSuccessAndReload(message, delaySeconds = 3) {
+        showMessageAndReload(message, 'success', delaySeconds);
+    }
+
+    function showErrorAndReload(message, delaySeconds = 3) {
+        showMessageAndReload(message, 'danger', delaySeconds);
+    }
+
+</script>
+<!--show mess end-->
+
+<script>
+    // Enhanced WebSocket connection with better error handling and debugging
+    function connectSocket(token) {
+        console.log('Connecting WebSocket with token:', token);
+
+        var socket = new SockJS('http://localhost:8083/ws');
+        var stompClient = Stomp.over(socket);
+
+        // Enable debug mode
+        stompClient.debug = function(str) {
+            console.log('STOMP Debug: ' + str);
+        };
+
+        // Connection headers
+        var headers = {
+            'Authorization': 'Bearer ' + token
+        };
+
+        // Connect with error handling
+        stompClient.connect(headers,
+            function(frame) {
+                console.log('✓ WebSocket Connected: ' + frame);
+
+                // Subscribe to user-specific channel
+                stompClient.subscribe('/user/queue/order-status', function(message) {
+                    console.log('✓ Received user message:', message.body);
+                    var order = JSON.parse(message.body);
+                    console.log('✓ Parsed order:', order);
+
+                    if(order.status === "COMPLETED" || order.status === "") {
+                        showSuccessAndReload("Checkout successful! Order completed.", 1.5);
+                    } else {
+                        showInfo(order.status);
+                        $("#checkout").prop("disabled", false);
+                    }
+                    $("#checkoutSpinner").remove();
+                });
+
+                // Subscribe to notifications
+                stompClient.subscribe('/user/queue/notifications', function(message) {
+                    console.log('✓ Received notifications:', message.body);
+                    var notifications = JSON.parse(message.body);
+                    handleNotifications(notifications);
+                });
+
+                console.log('✓ Subscriptions completed');
+            },
+            function(error) {
+                console.error('✗ WebSocket connection error:', error);
+                // Retry connection after 5 seconds
+                setTimeout(function() {
+                    console.log('Retrying WebSocket connection...');
+                    connectSocket(token);
+                }, 5000);
+            }
+        );
+
+        // Handle WebSocket close
+        socket.onclose = function(event) {
+            console.log('WebSocket closed:', event);
+        };
+
+        return stompClient;
+    }
+
+    // Notification handling functions
+    function handleNotifications(notifications) {
+        if (notifications && notifications.length > 0) {
+            // Update notification badge
+            updateNotificationBadge(notifications.length);
+
+            // Render notifications in dropdown
+            renderNotifications(notifications);
+
+            // Show toast for new notifications (optional)
+            showNotificationToast(notifications[0]);
+        }
+    }
+
+    function renderNotifications(notifications) {
+        var container = $('#notifications-container');
+        container.empty();
+
+        if (notifications.length === 0) {
+            container.append(`
+            <div class="dropdown-item text-center py-3">
+                <i class="fas fa-bell-slash"></i>
+                <div>Không có thông báo mới</div>
+            </div>
+        `);
+            return;
+        }
+
+        notifications.forEach(function(notification) {
+            var timeAgo = formatTimeAgo(notification.createdAt);
+            var readClass = notification.isRead ? 'read' : 'unread';
+
+            var notificationHtml = `
+            <div class="dropdown-item notification-item ${readClass}" data-id="${notification.id}">
+                <div class="d-flex align-items-start">
+                    <div class="notification-icon me-3">
+                        <i class="fas fa-bell text-primary"></i>
+                    </div>
+                    <div class="notification-content flex-grow-1">
+                        <h6 class="notification-title mb-1">${escapeHtml(notification.title)}</h6>
+                        <p class="notification-message mb-1">${escapeHtml(notification.message)}</p>
+                        <small class="notification-time">
+                            <i class="fas fa-clock me-1"></i>${timeAgo}
+                        </small>
+                    </div>
+                    ${!notification.isRead ? '<div class="notification-dot"></div>' : ''}
+                </div>
+            </div>
+        `;
+
+            container.append(notificationHtml);
+        });
+
+        // Add click handlers
+        $('.notification-item').on('click', function() {
+            var notificationId = $(this).data('id');
+            markNotificationAsRead(notificationId, $(this));
+        });
+    }
+
+    function markNotificationAsRead(notificationId, element) {
+        // Make API call to mark as read
+        $.ajax({
+            url: `/api/notifications/${notificationId}/read`,
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            success: function() {
+                // Update UI
+                element.removeClass('unread').addClass('read');
+                element.find('.notification-dot').remove();
+
+                // Update badge count
+                var currentCount = parseInt($('#notification-badge').text()) || 0;
+                if (currentCount > 0) {
+                    updateNotificationBadge(currentCount - 1);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error marking notification as read:', error);
+            }
+        });
+    }
+
+    function showNotificationToast(notification) {
+        var timeAgo = formatTimeAgo(notification.createdAt);
+        // Show bootstrap toast for new notification
+        var toastHtml = `
+        <div class="toast notification-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-bell text-primary me-2"></i>
+                <strong class="me-auto">${escapeHtml(notification.title)}</strong>
+                <small class="">${timeAgo}</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${escapeHtml(notification.message)}
+            </div>
+        </div>
+    `;
+
+        // Add to toast container
+        if (!$('#toast-container').length) {
+            $('body').append('<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3"></div>');
+        }
+
+        var $toast = $(toastHtml);
+        $('#toast-container').append($toast);
+
+        // Initialize and show toast
+        var toast = new bootstrap.Toast($toast[0], {
+            autohide: true,
+            delay: 5000
+        });
+        toast.show();
+
+        // Remove toast element after it's hidden
+        $toast.on('hidden.bs.toast', function() {
+            $(this).remove();
+        });
+    }
+
+    // Utility functions
+    function formatTimeAgo(dateString) {
+        var date = new Date(dateString);
+        var now = new Date();
+        var diffInSeconds = Math.floor((now - date) / 1000);
+
+        if (diffInSeconds < 60) {
+            return 'Vừa xong';
+        } else if (diffInSeconds < 3600) {
+            return Math.floor(diffInSeconds / 60) + ' phút trước';
+        } else if (diffInSeconds < 86400) {
+            return Math.floor(diffInSeconds / 3600) + ' giờ trước';
+        } else {
+            return Math.floor(diffInSeconds / 86400) + ' ngày trước';
+        }
+    }
+
+    function escapeHtml(text) {
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Load all notifications function
+    function loadAllNotifications() {
+        $.ajax({
+            url: '/api/notifications',
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            success: function(notifications) {
+                renderNotifications(notifications);
+                var unreadCount = notifications.filter(n => !n.isRead).length;
+                updateNotificationBadge(unreadCount);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading notifications:', error);
+            }
+        });
+    }
 
     let products = [];
     let orders = [];
+    let token;
+    const API_BASE = "http://localhost:8080";
     // Các biến phân trang cho sản phẩm
     let currentPageProducts = 1, itemsPerPageProducts = 8;
     // Các biến phân trang cho đơn hàng
     let currentPageOrders = 1, itemsPerPageOrders = 4000, totalRecords = 0;
 
-    $(document).ready(function() {
-        const API_BASE = "http://api.raydensolution.com";
-        let token = getCookie("token");
+    // Hàm render menu vào div#navbarNav với UI đẹp hơn
+    function renderNavbarItems(hasToken) {
+        // Tạo phần <ul> chứa các item
+        let navHtml = `
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#" id="view-products">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="#myOrders" id="my-orders-btn">My Orders</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" id="cart-icon" data-bs-toggle="modal" data-bs-target="#cartModal">Cart</a></li>
+`;
 
-        function getCookie(name) {
-            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-            return match ? match[2] : null;
+        // Thêm thông báo chỉ khi user đã đăng nhập
+        if (hasToken) {
+            navHtml += `
+        <!-- Notification Dropdown -->
+        <li class="nav-item dropdown">
+            <a class="nav-link position-relative" href="#" id="notificationDropdown"
+               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-bell fs-5"></i>
+                <span id="notification-badge" class="notification-badge d-none">0</span>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-end notification-dropdown"
+                 aria-labelledby="notificationDropdown">
+
+                <!-- Header -->
+                <div class="notification-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">
+                            <i class="fas fa-bell me-2"></i>Thông báo
+                        </h6>
+                        <button class="btn btn-sm" onclick="loadAllNotifications()">
+                            <i class="fas fa-refresh"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Notifications Container -->
+                <div id="notifications-container">
+                    <!-- Loading state -->
+                    <div class="notification-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div>Đang tải thông báo...</div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+<!--                <div class="notification-footer">-->
+<!--                    <a href="/notifications" class="btn btn-sm btn-link">-->
+<!--                        <i class="fas fa-external-link-alt me-1"></i>-->
+<!--                        Xem tất cả thông báo-->
+<!--                    </a>-->
+<!--                </div>-->
+            </div>
+        </li>
+        `;
         }
 
-        function loadProducts() {
-            if (!token) {
-                console.log("Please log in to view products.");
-                return;
+        if (hasToken) {
+            navHtml += `
+        <li class="nav-item"><a class="nav-link" href="#" id="logout-btn">Logout</a></li>
+    `;
+        } else {
+            navHtml += `
+        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a></li>
+    `;
+        }
+
+        navHtml += `</ul>`;
+
+        // Render vào div#navbarNav
+        $('#navbarNav').html(navHtml);
+
+        // Gán sự kiện logout nếu có
+        $('#logout-btn').click(function (e) {
+            e.preventDefault();
+            document.cookie = "token=; Max-Age=0; path=/;";
+            location.reload();
+        });
+    }
+
+    // Hàm tạo HTML cho notification với UI đẹp hơn
+    function createNotificationHtml(notification) {
+        const timeAgo = getTimeAgo(notification.createdAt);
+        const readClass = notification.isRead ? 'read' : 'unread';
+
+        // Xác định loại icon và class dựa trên type
+        let iconClass = 'fas fa-bell';
+        let iconType = 'default';
+
+        if (notification.type === 'VOUCHER' || notification.title.toLowerCase().includes('voucher')) {
+            iconClass = 'fas fa-tag';
+            iconType = 'voucher';
+        } else if (notification.type === 'ORDER' || notification.title.toLowerCase().includes('đơn hàng')) {
+            iconClass = 'fas fa-shopping-cart';
+            iconType = 'order';
+        } else if (notification.type === 'SYSTEM') {
+            iconClass = 'fas fa-cog';
+            iconType = 'system';
+        }
+
+        return `
+        <div class="notification-item ${readClass}" data-id="${notification.id}">
+            <div class="d-flex align-items-start">
+                <div class="notification-icon ${iconType}">
+                    <i class="${iconClass}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${notification.title}</div>
+                    <div class="notification-message">${notification.message}</div>
+                    <div class="notification-time">
+                        <i class="fas fa-clock me-1"></i>${timeAgo}
+                    </div>
+                </div>
+                ${!notification.isRead ? '<div class="notification-dot"></div>' : ''}
+            </div>
+        </div>
+    `;
+    }
+
+    // Hàm hiển thị trạng thái empty
+    function showEmptyNotifications() {
+        $('#notifications-container').html(`
+        <div class="notification-empty">
+            <i class="fas fa-bell-slash"></i>
+            <h6>Chưa có thông báo</h6>
+            <p>Bạn sẽ nhận được thông báo về đơn hàng, voucher và các hoạt động khác tại đây.</p>
+        </div>
+    `);
+    }
+
+    // Hàm hiển thị trạng thái loading
+    function showLoadingNotifications() {
+        $('#notifications-container').html(`
+        <div class="notification-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <div>Đang tải thông báo...</div>
+        </div>
+    `);
+    }
+
+    // Hàm hiển thị trạng thái lỗi
+    function showErrorNotifications() {
+        $('#notifications-container').html(`
+        <div class="notification-error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>Không thể tải thông báo</div>
+            <button class="btn btn-sm btn-outline-danger mt-2" onclick="loadAllNotifications()">
+                <i class="fas fa-redo"></i> Thử lại
+            </button>
+        </div>
+    `);
+    }
+
+    // Utility function để format thời gian
+    function getTimeAgo(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+        const diffInSeconds = Math.floor((now - date) / 1000);
+
+        if (diffInSeconds < 60) return 'Vừa xong';
+        if (diffInSeconds < 3600) return Math.floor(diffInSeconds / 60) + ' phút trước';
+        if (diffInSeconds < 86400) return Math.floor(diffInSeconds / 3600) + ' giờ trước';
+        if (diffInSeconds < 604800) return Math.floor(diffInSeconds / 86400) + ' ngày trước';
+        return Math.floor(diffInSeconds / 604800) + ' tuần trước';
+    }
+
+    // Hàm cập nhật badge
+    function updateNotificationBadge() {
+        const unreadCount = $('.notification-item.unread').length;
+        const badge = $('#notification-badge');
+
+        if (unreadCount > 0) {
+            badge.text(unreadCount > 99 ? '99+' : unreadCount).removeClass('d-none');
+        } else {
+            badge.addClass('d-none');
+        }
+    }
+
+    function loadProducts(req) {
+        if (!token) {
+            console.log("Please log in to view products.");
+            return;
+        }
+        $("#product-list").html("<div class='text-center my-4'><div class='spinner-border text-primary' role='status'><span class='visually-hidden'>Loading...</span></div></div>");
+        $.ajax({
+            url: `${API_BASE}/products/search`,
+            method: "POST",
+            headers: { 'Authorization': `Bearer ${token}` },
+            data: JSON.stringify(req),
+            contentType: "application/json",
+            success: function(data) {
+                products = data;
+                currentPageProducts = 1;
+                renderProducts();
             }
-            $("#product-list").html("<div class='text-center my-4'><div class='spinner-border text-primary' role='status'><span class='visually-hidden'>Loading...</span></div></div>");
-            $.ajax({
-                url: `${API_BASE}/products/search`,
-                method: "POST",
-                headers: { 'Authorization': `Bearer ${token}` },
-                data: JSON.stringify({ status: true }),
-                contentType: "application/json",
-                success: function(data) {
-                    products = data;
-                    currentPageProducts = 1;
-                    renderProducts();
-                }
-            });
-        }
+        });
+    }
 
-        function renderProducts() {
-            let start = (currentPageProducts - 1) * itemsPerPageProducts;
-            let end = start + itemsPerPageProducts;
-            let paginatedProducts = products.slice(start, end);
-            let html = "";
-            paginatedProducts.forEach(product => {
-                html += `<div class="col-md-3 mb-3">
+    function renderProducts() {
+        let start = (currentPageProducts - 1) * itemsPerPageProducts;
+        let end = start + itemsPerPageProducts;
+        let paginatedProducts = products.slice(start, end);
+        let html = "";
+        paginatedProducts.forEach(product => {
+            html += `<div class="col-md-3 mb-3">
                       <div class="card h-100">
                         <img src="${product.image}" class="card-img-top" alt="${product.name}">
                         <div class="card-body">
                           <h5 class="card-title">${product.name}</h5>
                           <p class="card-text">$${product.price}</p>
+                          <p class="card-text">Quantity: ${product.quantity}</p>
                           <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
                           <button class="btn btn-secondary edit-product ms-2" data-id="${product.id}">Edit</button>
                         </div>
                       </div>
                     </div>`;
-            });
-            $("#product-list").html(html);
-            renderProductPagination();
+        });
+        $("#product-list").html(html);
+        renderProductPagination();
+    }
+
+    function renderProductPagination() {
+        let totalPages = Math.ceil(products.length / itemsPerPageProducts);
+        let paginationHtml = "";
+        for(let i = 1; i <= totalPages; i++){
+            paginationHtml += `<li class="page-item ${i === currentPageProducts ? 'active' : ''}"><a class="page-link product-page" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        $("#productPagination").html(paginationHtml);
+    }
+
+    $(document).ready(function() {
+        let vouchers = [];
+        let tempTotal = 0;
+        let selectedVoucher;
+        token = getCookie("token");
+        renderNavbarItems(token);
+        if(token){
+            connectSocket(token);
         }
 
-        function renderProductPagination() {
-            let totalPages = Math.ceil(products.length / itemsPerPageProducts);
-            let paginationHtml = "";
-            for(let i = 1; i <= totalPages; i++){
-                paginationHtml += `<li class="page-item ${i === currentPageProducts ? 'active' : ''}"><a class="page-link product-page" href="#" data-page="${i}">${i}</a></li>`;
-            }
-            $("#productPagination").html(paginationHtml);
+        function getCookie(name) {
+            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return match ? match[2] : null;
         }
 
         $(document).on("click", ".product-page", function(e) {
@@ -297,6 +1360,62 @@
             renderProducts();
         });
 
+
+        function renderVouchers() {
+
+            const $voucherList = $('#voucherList');
+            $voucherList.empty();
+
+            vouchers.forEach(voucher => {
+                const discountText = voucher.percent
+                    ? `${Math.round(voucher.discountAmount)}%`
+                    : `$${Math.round(voucher.discountAmount).toLocaleString()}`;
+
+                const minPurchase = Math.round(voucher.minPurchase).toLocaleString();
+                const expiredAt = new Date(voucher.expiredAt).toLocaleString('vi-VN');
+                let checked = selectedVoucher != undefined && selectedVoucher != null
+                     && selectedVoucher.id === voucher.id;
+                console.log('zxc ', checked, selectedVoucher, voucher);
+
+                const li = `
+                            <li class="list-group-item">
+                                <input type="checkbox" name="voucher" value="${voucher.id}" class="form-check-input me-2 voucher-checkbox" ${checked ? 'checked' : ''}>
+                                <strong>${voucher.code}</strong> - Giảm ${discountText}<br>
+                                <small>Đơn tối thiểu: $${minPurchase}</small><br>
+                                <small>HSD: ${expiredAt}</small>
+                            </li>
+                        `;
+                $voucherList.append(li);
+            });
+
+            $('#voucherModal').modal('show');
+
+            $('#applyVoucherBtn').on('click', function () {
+                selectedVoucherId = $('input[name="voucher"]:checked').val();
+
+                if (selectedVoucherId) {
+                    selectedVoucher = vouchers.find(item => item.id == selectedVoucherId);
+                    console.log('Voucher được chọn:', selectedVoucherId, selectedVoucher);
+                    if(selectedVoucher){
+                        const discountText = selectedVoucher.percent
+                            ? `${Math.round(selectedVoucher.discountAmount)}%`
+                            : `$${Math.round(selectedVoucher.discountAmount).toLocaleString()}`;
+                        $('#selected-voucher').text(selectedVoucher.code + ' -' + discountText);
+                    }
+                } else {
+                    selectedVoucher = null;
+                    $('#selected-voucher').text('');
+                }
+                $('#voucherModal').modal('hide');
+            });
+
+            $(document).on('change', '.voucher-checkbox', function () {
+                $('.voucher-checkbox').not(this).prop('checked', false);
+            });
+
+        }
+
+
         // Hàm loadCart() hiện tại không thay đổi logic
         function loadCart() {
             $.ajax({
@@ -304,21 +1423,114 @@
                 headers: { 'Authorization': `Bearer ${token}` },
                 success: function(data) {
                     console.log('cart: ', data);
+                    fetchVoucher();
+                    tempTotal = 0;
                     let html = "<ul class='list-group'>";
+                    html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                            <button class="btn btn-outline-dark btn-sm" id="openVoucherModal">Chọn voucher</button>
+                          </div>
+                          <div class="d-flex align-items-center">
+                            <span id="selected-voucher"></span>
+                          </div>
+                        </li>`;
                     data.data.forEach(item => {
+                        tempTotal += item.price * item.quantity;
                         html += `<li class="list-group-item d-flex justify-content-between align-items-center">
                           <div>
                             <input type="checkbox" class="cart-checkbox me-2" data-id="${item.productId}" checked>
                             ${item.name}
                           </div>
                           <div class="d-flex align-items-center">
-                            <input type="number" class="cart-quantity form-control me-2" data-id="${item.productId}" value="${item.quantity}" min="1" style="width:80px;">
+                            <input type="number" class="cart-quantity form-control me-2" data-id="${item.productId}"
+                                data-price="${item.price}"
+                                value="${item.quantity}" min="1" style="width:80px;">
                             <span>$${item.price}</span>
+                            <button class="remove-btn-style4 ms-3 remove-item-btn" title="Remove item" data-id="${item.productId}">
+                                <i class="fa-solid fa-trash"></i>
+                                <span class="btn-text">Remove</span>
+                            </button>
                           </div>
                         </li>`;
                     });
-                    html += "</ul>";
+                    html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                          <div>
+                            <span style="font-weight: bold">Total:</span>
+                          </div>
+                          <div class="d-flex align-items-center">
+                            <span id="total-price" style="font-weight: bold">$${tempTotal.toFixed(2)}</span>
+                          </div>
+                        </li></ul>`;
                     $("#cart-content").html(html);
+                    addRemoveFromCartEvent();
+                    addChangeQuantityEvent();
+                    $("#openVoucherModal").off('click').on('click', function () {
+                       renderVouchers();
+                    });
+                }
+            });
+        }
+
+        function addRemoveFromCartEvent(){
+            // Gắn sự kiện click cho nút xóa sau khi render
+            $('.remove-item-btn').off('click').on('click', function () {
+                const productId = $(this).data('id');
+
+                $.ajax({
+                    url: `${API_BASE}/products/remove-from-cart`,
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    data: { productId },
+                    success: function(response) {
+                        console.log('Removed product:', productId);
+                        loadCart(); // reload lại cart sau khi xóa
+                    },
+                    error: function(xhr) {
+                        showError('Lỗi khi xóa sản phẩm khỏi giỏ hàng!');
+                    }
+                });
+            });
+
+        }
+
+        function addChangeQuantityEvent(){
+            $(document).on('change', '.cart-quantity', function () {
+                if($(this).val() === '' || $(this).val() <= 0){
+                    $(this).val(1);
+                }
+                updateTotal();
+            });
+
+            $(document).on('change', '.cart-checkbox', function () {
+                updateTotal();
+            });
+        }
+
+        function updateTotal() {
+            tempTotal = 0;
+            $('.cart-quantity').each(function () {
+                const quantity = parseInt($(this).val());
+                const price = parseFloat($(this).data('price'));
+                const id = $(this).data('id');
+                const isChecked = $(`.cart-checkbox[data-id="${id}"]`).is(':checked');
+
+                if (isChecked) {
+                    tempTotal += quantity * price;
+                }
+            });
+
+            $('#total-price').text(`$${tempTotal.toFixed(2)}`);
+        }
+
+        function fetchVoucher(){
+            $.ajax({
+                url: `${API_BASE}/vouchers/my-voucher`,
+                headers: { 'Authorization': `Bearer ${token}` },
+                success: function(data) {
+                    console.log('fetchVoucher: ', data);
+                    vouchers = data.data
+                    selectedVoucher = null;
+                    $('#selected-voucher').text('');
                 }
             });
         }
@@ -338,7 +1550,7 @@
                         quantity: 1
                     }),
                     success: function() {
-                        alert("Added to cart!");
+                        showInfo("Added to cart!");
                     }
                 });
             }
@@ -354,6 +1566,10 @@
                 let quantity = parseInt($(`.cart-quantity[data-id='${id}']`).val(), 10);
                 selectedItems.push({ productId: id, quantity: quantity });
             });
+            if(!selectedItems || selectedItems.length === 0){
+                showWarning("Đặt hàng đi mày!!!!");
+                return;
+            }
 
             // Hiển thị animation loading trong modal cart
             let spinner = `<div id="checkoutSpinner" class="spinner-overlay">
@@ -370,16 +1586,22 @@
                 headers: { 'Authorization': `Bearer ${token}` },
                 contentType: "application/json",
                 data: JSON.stringify({
-                    selectedProducts: selectedItems
+                    selectedProducts: selectedItems,
+                    voucherId: selectedVoucher?.id
                 }),
-                success: function(initialResponse) {
-                    console.log(initialResponse);
+                success: function(response) {
+                    console.log(response);
+                    if(response.statusCode !== 200){
+                        showError(response.data);
+                        $("#checkoutSpinner").remove();
+                        $("#checkout").prop("disabled", false);
+                    }
                     // FE đợi thông báo qua WebSocket từ Kafka.
                 },
                 error: function() {
                     $("#checkoutSpinner").remove();
                     $("#checkout").prop("disabled", false);
-                    alert("Checkout failed to start.");
+                    showError("Checkout failed to start.");
                 }
             });
         });
@@ -456,8 +1678,6 @@
             console.log("end pagination");
         }
 
-
-
         // Hàm loadMyOrders() với phân trang cho đơn hàng
         function loadMyOrders(){
             if(!token)
@@ -517,6 +1737,10 @@
             let html = "";
             if(paginatedOrders && paginatedOrders.length > 0){
                 paginatedOrders.forEach(order => {
+                    let voucherMess = ``;
+                    if(order?.voucherMess && order?.voucherMess.length > 0){
+                        voucherMess = `<p><strong>Voucher:</strong> ${order.voucherMess}</p>`;
+                    }
                     html += `<div class="card mb-4">
                         <div class="card-header bg-light">
                             <h5 class="mb-0">Order ID: ${order.id}</h5>
@@ -526,6 +1750,7 @@
                             <p><strong>Order Date:</strong> ${order.orderDate}</p>
                             <p><strong>Total Price:</strong> $${order.totalPrice}</p>
                             <p><strong>Status:</strong> ${order.status}</p>
+                            ${voucherMess}
                             <hr>
                             <h6>Cart Items:</h6>`;
                     // Giả sử order.cartItemsJson là chuỗi JSON hợp lệ (đã lưu từ backend)
@@ -637,7 +1862,7 @@
                     error: function() {
                         $("#productSpinner").remove();
                         $("#saveProduct").prop("disabled", false);
-                        alert("Fail to add product.");
+                        showError("Fail to add product.");
                     }
                 });
             } else {
@@ -654,7 +1879,7 @@
                     error: function() {
                         $("#productSpinner").remove();
                         $("#saveProduct").prop("disabled", false);
-                        alert("Fail to update product.");
+                        showError("Fail to update product.");
                     }
                 });
             }
@@ -680,7 +1905,7 @@
                         // loadMyOrders();
                         location.reload();
                     } else{
-                        alert(response.data);
+                        showError(response.data);
                     }
                 }
             });
@@ -709,9 +1934,10 @@
             });
         });
 
-        loadProducts();
+        loadProducts({ });
         loadMyOrders();
     });
 </script>
+<script src="./search-gitlab.js"></script>
 </body>
 </html>

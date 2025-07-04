@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}  # sử dụng KAFKA_HOST và KAFKA_PORT từ env
+    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
     consumer:
       group-id: ${KAFKA_GROUP_ID}
       auto-offset-reset: earliest
@@ -8,5 +8,13 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "org.example.dtos"
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 server:
   port: 8083
+
+identity-service:
+  url: ${URL_IDENTITY_SERVICE}

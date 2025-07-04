@@ -15,6 +15,7 @@ import org.example.exception.RecordExistException;
 import org.example.exception.UnAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class AuthService {
     @Autowired
     private UrlAccessService urlAccessService;
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     public UserDto saveUser(UserDto credential) throws RecordExistException {
         User user = repository.findByEmail(credential.getEmail());
@@ -49,6 +50,10 @@ public class AuthService {
         saveUser.setPassword(passwordEncoder.encode(credential.getPassword()));
         repository.save(saveUser);
         credential.setId(saveUser.getId());
+
+        //create voucher for new user
+        String userIdStr = String.valueOf(saveUser.getId());
+        kafkaTemplate.send("user-registered", userIdStr);
         return credential;
     }
 
@@ -136,5 +141,9 @@ public class AuthService {
         repository.save(saveUser);
         credential.setId(saveUser.getId());
         return credential;
+    }
+
+    public List<Long> getRandomUsers() {
+        return repository.findRandomUsers();
     }
 }

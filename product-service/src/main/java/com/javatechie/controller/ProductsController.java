@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
+import org.example.dtos.DecreaseStockRequest;
 import org.example.dtos.UserDto;
 import org.example.exception.UnAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class ProductsController {
     }
 
     @PostMapping ("/search")
-    public List<ProductDto> getAllProducts(SearchProductRequest request) {
+    public List<ProductDto> getAllProducts(@RequestBody SearchProductRequest request) {
         return productService.getAllProducts(request);
     }
 
@@ -73,6 +74,26 @@ public class ProductsController {
         return CommonResponse.ok(productService.addToCart(item));
     }
 
+    @DeleteMapping("/remove-from-cart")
+    public CommonResponse<?> removeFromCart(@RequestHeader("Authorization") String token, @RequestParam Long productId) {
+        log.info("RemoveFromCart1: {}", productId);
+        CommonResponse<?> response = identityClient.getCurrentUser(token);
+        log.info("RemoveFromCart2: {}", response);
+        if(response.getStatusCode() != HttpStatus.OK.value() || response.getData() == null) {
+            log.error("invalid token1???");
+            return CommonResponse.unAuth();
+        }
+        Long userId = null;
+        if(response.getData() instanceof UserDto) {
+            userId = (((UserDto) response.getData()).getId());
+        }else {
+            log.info(response.getData().getClass().getName());
+            log.error("invalid token2???");
+            return CommonResponse.unAuth();
+        }
+        return productService.removeFromCart(userId, productId);
+    }
+
     @GetMapping("/get-by-user/{userId}")
     public CommonResponse<?> getProductByUserId(@PathVariable Long userId){
         log.info("getProductByUserId: {}", userId);
@@ -96,9 +117,9 @@ public class ProductsController {
     }
 
     @PostMapping("/decrease-stock")
-    CommonResponse<String> decreaseStock(@RequestBody List<CartItemDto> cartItems) throws Exception {
-        log.info("start decreaseStock: {}", cartItems);
-        return CommonResponse.ok(productService.decreaseStock(cartItems));
+    CommonResponse<String> decreaseStock(@RequestBody DecreaseStockRequest request) throws Exception {
+        log.info("start decreaseStock: {}", request);
+        return CommonResponse.ok(productService.decreaseStock(request));
     }
 }
 

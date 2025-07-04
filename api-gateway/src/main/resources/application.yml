@@ -4,35 +4,35 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"  # Cho phép tất cả domain
+            allowedOrigins: "*" # Cho phép tất cả domain
             allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders: "*"  # Cho phép tất cả các header
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+            allowedHeaders: "*" # Cho phép tất cả các header
       routes:
-        - id: order-service
-          uri: ${ORDER_SERVICE_URI}  # Sử dụng biến môi trường
-          predicates:
-            - Path=/swiggy/**, /orders/**
-          filters:
-            - AuthenticationFilter
+      - id: order-service
+        uri: ${ORDER_SERVICE_URI} # Sử dụng biến môi trường
+        predicates:
+        - Path=/swiggy/**, /orders/**, /vouchers/**
+        filters:
+        - AuthenticationFilter
 
-        - id: product-service
-          uri: ${PRODUCT_SERVICE_URI}  # Sử dụng biến môi trường
-          predicates:
-            - Path=/products/**
-          filters:
-            - AuthenticationFilter
+      - id: product-service
+        uri: ${PRODUCT_SERVICE_URI} # Sử dụng biến môi trường
+        predicates:
+        - Path=/products/**
+        filters:
+        - AuthenticationFilter
 
-        - id: identity-service
-          uri: ${IDENTITY_SERVICE_URI}  # Sử dụng biến môi trường
-          predicates:
-            - Path=/auth/**, /users/**
-          filters:
-            - AuthenticationFilter
+      - id: identity-service
+        uri: ${IDENTITY_SERVICE_URI} # Sử dụng biến môi trường
+        predicates:
+        - Path=/auth/**, /users/**
+        filters:
+        - AuthenticationFilter
 
 application:
   name: API-GATEWAY

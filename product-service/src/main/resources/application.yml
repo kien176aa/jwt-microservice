@@ -4,12 +4,14 @@ server:
 spring:
   application:
     name: PRODUCT-SERVICE
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017/product-db
 
-eureka:
-  client:
-    service-url:
-      defaultZone : ${EUREKA_DEFAULT_ZONE}  
+identity-service:
+  url: ${URL_IDENTITY_SERVICE}
 
-url:
-  identity:
-    service: ${URL_IDENTITY_SERVICE} 
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone : ${EUREKA_DEFAULT_ZONE}

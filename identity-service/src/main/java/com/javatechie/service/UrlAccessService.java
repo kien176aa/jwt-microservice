@@ -9,6 +9,8 @@ import org.example.exception.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -38,7 +40,7 @@ public class UrlAccessService {
 
         List<UrlAccess> urlAccessList = urlAccessRepository.findAll();
         log.info("Get in db");
-        redisTemplate.opsForValue().set(CACHE_KEY, urlAccessList);
+        redisTemplate.opsForValue().set(CACHE_KEY, urlAccessList, Duration.ofDays(1));
 
         return urlAccessList;
     }

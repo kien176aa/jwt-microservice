@@ -6,14 +6,13 @@ spring:
     name: ORDER-SERVICE
   kafka:
     bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
-eureka:
-  client:
-    service-url:
-      defaultZone : ${EUREKA_DEFAULT_ZONE}
 
+identity-service:
+  url: ${URL_IDENTITY_SERVICE}
+product-service:
+  url: ${URL_PRODUCT_SERVICE}
 
-url:
-  identity:
-    service: ${URL_IDENTITY_SERVICE}
-  product:
-    service: ${URL_PRODUCT_SERVICE}
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone : ${EUREKA_DEFAULT_ZONE}

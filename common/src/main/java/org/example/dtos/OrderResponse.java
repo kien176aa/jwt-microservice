@@ -17,4 +17,5 @@ public class OrderResponse {
     private double totalPrice;
     private String status;
     private String cartItemsJson;
+    private String voucherMess;
 }
