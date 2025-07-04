@@ -12,7 +12,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - .docker/data/db:/var/lib/mysql
 
   # Redis Cache
   redis:
@@ -59,6 +59,8 @@ services:
 
 
   frontend-service:
+    image: datnd2711/microsv-app-fe:v3
+
     container_name: frontend
     build:
       context: fe
@@ -67,6 +69,7 @@ services:
       - "3003:80"
 
   identity-service:
+    image: datnd2711/microsv-identity-svc:latest
     container_name: identity-service
     build:
       context: .
@@ -88,6 +91,7 @@ services:
       - "9898:9898"
 
   product-service:
+    image: datnd2711/microsv-product-svc:latest
     container_name: product-service
     build:
       context: .
@@ -108,6 +112,7 @@ services:
 
 
   notification-service:
+    image: datnd2711/microsv-noti-svc:v5
     container_name: notification-service
     build:
       context: .
@@ -122,6 +127,7 @@ services:
       - "8083:8083"
 
   order-service:
+    image: datnd2711/microsv-order-svc:v5
     container_name: order-service
     build:
       context: .
@@ -143,6 +149,8 @@ services:
       - "8081:8081"
 
   api-gateway:
+    image: datnd2711/microsv-apigw-svc:latest
+     
     container_name: api-gateway
     build: 
       context: .
@@ -159,18 +167,4 @@ services:
       IDENTITY_SERVICE_URI: http://identity-service:9898
     ports:
       - "8080:8080"
-      
-  # eureka:
-  #   build:
-  #     context: .
-  #     dockerfile: eureka-service-registry/Dockerfile
-  #   container_name: eureka-server
-  #   environment:
-  #     EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
-  #     EUREKA_CLIENT_FETCH_REGISTRY: false
-
-  #   ports:
-  #     - "8761:8761"
-
-volumes:
-  mysql_data:
+     
