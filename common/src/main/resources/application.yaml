@@ -1,0 +1,12 @@
+# application.yaml
+
+allow:
+  url: ALLOW_URL
+
+url:
+  validate:
+    token: http://identity-service:9898/auth/validate
+  identity:
+    service: http://identity-service:9898
+  product:
+    service: http://product-service:8082

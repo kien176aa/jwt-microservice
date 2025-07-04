@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: microsvc
+  annotations:
+    sidecar.opentelemetry.io/inject: "true"
+    instrumentation.opentelemetry.io/inject-java: "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      annotations:
+        sidecar.opentelemetry.io/inject: "true"
+        instrumentation.opentelemetry.io/inject-java: "true"
+      labels:
+        app: notification-service
+        framework: spring
+
+    spec:
+      containers:
+      - name: notification-service
+        image: datnd2711/microsv-noti-svc:v5
+        ports:
+        - containerPort: 8083
+        env:
+        - name: KAFKA_HOST
+          value: kafka
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_GROUP_ID
+          value: notification-group
+        - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+          value: notification-group
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: microsvc
+spec:
+  selector:
+    app: notification-service
+  ports:
+  - protocol: TCP
+    port: 8083
+    targetPort: 8083
+  type: ClusterIP
+  # Enable session affinity
+  # sessionAffinity: ClientIP
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800  # 3 hours

@@ -3,7 +3,6 @@ package com.javatechie.filter;
 import com.javatechie.exception.UnAuthException;
 import com.javatechie.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.example.constants.ConstantValue;
 import org.example.constants.ErrorMessage;
 import org.example.dtos.CheckPermissionRequest;
 import org.example.dtos.CommonResponse;
@@ -14,6 +13,8 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
+
 
 import java.util.Objects;
 
@@ -29,6 +30,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Value("${identity-service.validate-token-url}")
+    private String URL_VALIDATE_TOKEN;
+
 
     public AuthenticationFilter() {
         super(Config.class);
