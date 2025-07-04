@@ -1,3 +1,4 @@
+
 UPDATE url_access
 SET url = '/auth,/ws'
 WHERE role = 'ALLOW_URL';

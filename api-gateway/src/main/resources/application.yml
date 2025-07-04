@@ -14,24 +14,21 @@ spring:
             allowedHeaders: "*" # Cho phép tất cả các header
       routes:
       - id: order-service
-#        uri: http://order-service:8081 # Docker
-        uri: http://localhost:8081        # Local development
+        uri: ${ORDER_SERVICE_URI} # Sử dụng biến môi trường
         predicates:
         - Path=/swiggy/**, /orders/**, /vouchers/**
         filters:
         - AuthenticationFilter
 
       - id: product-service
-        uri: http://localhost:8082        # Local development
-#        uri: http://product-service:8082 # Docker
+        uri: ${PRODUCT_SERVICE_URI} # Sử dụng biến môi trường
         predicates:
         - Path=/products/**
         filters:
         - AuthenticationFilter
 
       - id: identity-service
-        uri: http://localhost:9898        # Local development
-#        uri: http://identity-service:9898 # Docker
+        uri: ${IDENTITY_SERVICE_URI} # Sử dụng biến môi trường
         predicates:
         - Path=/auth/**, /users/**
         filters:
@@ -41,51 +38,4 @@ application:
   name: API-GATEWAY
 
 identity-service:
-  validate-token-url: http://${identity-service:localhost}:9898/auth/validate
-
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: ${EUREKA_DEFAULT_ZONE}
-
-# spring:
-#   application:
-#     name: swiggy-gateway
-#   cloud:
-#     gateway:
-#       globalcors:
-#         corsConfigurations:
-#           '[/**]':
-#             allowedOrigins: "*"       # Cho phép tất cả domain
-#             allowedMethods:
-#               - GET
-#               - POST
-#               - PUT
-#               - DELETE
-#               - OPTIONS
-#             allowedHeaders: "*"         # Cho phép tất cả các header
-#       routes:
-#         - id: order-service
-#           uri: lb://ORDER-SERVICE
-#           predicates:
-#             - Path=/swiggy/**, /orders/**
-#           filters:
-#             - AuthenticationFilter
-
-#         - id: product-service
-#           uri: lb://PRODUCT-SERVICE
-#           predicates:
-#             - Path=/products/**
-#           filters:
-#             - AuthenticationFilter
-
-#         - id: identity-service
-#           uri: lb://IDENTITY-SERVICE
-#           predicates:
-#             - Path=/auth/**, /users/**
-#           filters:
-#             - AuthenticationFilter
-# eureka:
-#   client:
-#     service-url:
-#       defaultZone: ${EUREKA_DEFAULT_ZONE}
+  validate-token-url: ${URL_VALIDATE_TOKEN}
