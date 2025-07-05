@@ -1,4 +1,4 @@
-package com.javatechie.dto;
+package org.example.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,11 +1,10 @@
 package com.javatechie.controller;
 
 import com.javatechie.dto.ProductDto;
-import com.javatechie.dto.SearchProductRequest;
+import org.example.dtos.SearchProductRequest;
 import com.javatechie.clients.IdentityClient;
 import com.javatechie.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
 import org.example.dtos.DecreaseStockRequest;

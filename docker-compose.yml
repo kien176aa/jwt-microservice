@@ -8,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: javatechie
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - ./.docker/data/db:/var/lib/mysql
   redis:
@@ -110,6 +110,11 @@ services:
       URL_IDENTITY_SERVICE: http://identity-service:9898
       URL_PRODUCT_SERVICE: http://product-service:8082      
       MYSQL_PASSWORD: root
+      OPEN_AI_KEY: KO_CAN_CUNG_DC
+      AI_URL: https://openrouter.ai/api
+      AI_MODEL: mistralai/mistral-7b-instruct:free
+      GEMINI_KEY: KO_CAN_CUNG_DC
+      GEMINI_URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
     ports:
       - "8081:8081"
 

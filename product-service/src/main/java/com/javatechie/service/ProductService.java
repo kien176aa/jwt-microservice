@@ -1,7 +1,7 @@
 package com.javatechie.service;
 
 import com.javatechie.dto.ProductDto;
-import com.javatechie.dto.SearchProductRequest;
+import org.example.dtos.SearchProductRequest;
 import com.javatechie.entity.CartItem;
 import com.javatechie.entity.Product;
 import com.javatechie.entity.UpdateQuantityTransaction;
@@ -9,7 +9,6 @@ import com.javatechie.repository.CartItemRepository;
 import com.javatechie.repository.ProductRepository;
 import com.javatechie.repository.UpdateQuantityTransactionRepository;
 import lombok.extern.slf4j.Slf4j;
-//import org.apache.commons.lang.StringUtils;
 import org.example.constants.ErrorMessage;
 import org.example.dtos.CartItemDto;
 import org.example.dtos.CommonResponse;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 @Service
 @Slf4j
@@ -53,19 +51,6 @@ public class ProductService {
 //        saveAttributes(product);
         return product;
     }
-
-//    private void saveAttributes(ProductDto product) {
-//        ProductAttributes attr = new ProductAttributes();
-//        attr.setId("attr-"+product.getId());
-//        attr.setProductId(product.getId());
-//        attr.setAttributes(new HashMap<>());
-//        if(product.getAttributes() != null){
-//            for (String key : product.getAttributes().keySet()) {
-//                attr.getAttributes().put(key, product.getAttributes().get(key));
-//            }
-//        }
-//        productAttributesRepository.save(attr);
-//    }
 
     public List<ProductDto> getAllProducts(SearchProductRequest request) {
         return productRepository.searchWithOperators(

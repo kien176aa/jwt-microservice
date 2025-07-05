@@ -5,6 +5,8 @@ import com.javatechie.client.ProductClient;
 import com.javatechie.entity.Order;
 import com.javatechie.entity.Voucher;
 import com.javatechie.repository.OrderRepository;
+import com.javatechie.service.AiService;
+import com.javatechie.service.GeminiService;
 import com.javatechie.service.VoucherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,41 @@ public class OrderController {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     private IdentityClient identityClient;
+
+    @Autowired
+    private AiService aiService;
+
+    @Autowired
+    private GeminiService geminiService;
+
+    @GetMapping("/chat")
+    public CommonResponse<String> chat(@RequestParam String mess){
+        return CommonResponse.ok(aiService.chat(mess));
+    }
+
+    @GetMapping("/ask")
+    public ResponseEntity<String> askAI(@RequestHeader("Authorization") String token, @RequestParam String q) {
+        try {
+            CommonResponse<?> authResponse = identityClient.getCurrentUser(token);
+            log.info("askAI: {}", authResponse);
+            if(authResponse.getStatusCode() != HttpStatus.OK.value() || authResponse.getData() == null) {
+                log.error("askAI invalid token???");
+                return ResponseEntity.ok("Xin lỗi, tôi không thể xử lý yêu cầu này. Vui lòng thử lại!");
+            }
+            Long userId = null;
+            if(authResponse.getData() instanceof UserDto) {
+                userId = (((UserDto) authResponse.getData()).getId());
+            } else{
+                log.info(authResponse.getData().getClass().getName());
+                return ResponseEntity.ok("Xin lỗi, tôi không thể xử lý yêu cầu này. Vui lòng thử lại!");
+            }
+            log.info("start askAI: {}", userId);
+            String response = geminiService.processUserQuestion(q, userId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.ok("Xin lỗi, tôi không thể xử lý yêu cầu này. Vui lòng thử lại!");
+        }
+    }
 
     @PostMapping("/checkout")
     public CommonResponse<String> checkout(@RequestHeader("Authorization") String token,@RequestBody CheckoutRequest request) {

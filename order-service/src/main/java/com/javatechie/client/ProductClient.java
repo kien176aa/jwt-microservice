@@ -1,11 +1,7 @@
 package com.javatechie.client;
 
-import org.example.constants.ConstantValue;
-import org.example.dtos.CartItemDto;
-import org.example.dtos.CommonResponse;
-import org.example.dtos.DecreaseStockRequest;
+import org.example.dtos.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,5 +16,7 @@ public interface ProductClient {
     CommonResponse<List<CartItemDto>> getProductByUserId(@PathVariable Long userId);
     @PostMapping("/products/decrease-stock")
     CommonResponse<?> decreaseStock(@RequestBody DecreaseStockRequest request);
+    @PostMapping("/products/search")
+    List<ProductDto> searchProducts(@RequestBody SearchProductRequest request);
 }
 
