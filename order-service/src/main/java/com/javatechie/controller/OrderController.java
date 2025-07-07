@@ -109,7 +109,7 @@ public class OrderController {
         System.out.println("Total Price: " + totalPrice);
         Voucher voucher = voucherService.finbById(request.getVoucherId(), totalPrice);
 
-        OrderDto order = new OrderDto(null, userId, LocalDateTime.now(), totalPrice,
+        OrderDto order = new OrderDto(null, userId, LocalDateTime.now().toString(), totalPrice,
                 "PENDING", UUID.randomUUID().toString(), selectedProducts, setVoucher(voucher));
         log.info("Order info: {}", order);
         kafkaTemplate.send("order-topic", order);

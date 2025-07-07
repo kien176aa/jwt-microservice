@@ -5,10 +5,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.dtos.OrderDto;
 import org.example.utils.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "orders")
@@ -29,7 +34,15 @@ public class Order {
 
     public Order(OrderDto dto){
         userId = dto.getUserId();
-        orderDate = dto.getOrderDate();
+        if(dto.getOrderDate() != null){
+            try{
+                DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+                orderDate = LocalDateTime.parse(dto.getOrderDate(), formatter);
+            } catch (Exception e) {
+                System.out.println("Error parse date: " + e.getMessage());
+                orderDate = LocalDateTime.now();
+            }
+        }
         status = dto.getStatus();
         totalPrice = dto.getTotalPrice();
         if(dto.getVoucher() != null){

@@ -25,7 +25,7 @@ public class NotificationService {
                         item.getUserId(),
                         item.getTitle(),
                         item.getMessage(),
-                        item.getCreatedAt(),
+                        item.getCreatedAt().toString(),
                         item.isRead()
                 ))
                 .toList();
