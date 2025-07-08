@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: product-service
-        image: datnd2711/microsv-product-svc:latest
+        image: datnd2711/microsv-product-svc:release-v4
         ports:
         - containerPort: 8082
         env:

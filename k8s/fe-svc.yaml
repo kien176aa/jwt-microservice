@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: datnd2711/microsv-app-fe:latest
+        image: datnd2711/microsv-app-fe:release-v4
         ports:
         - containerPort: 80
           name: http-ecom-fe

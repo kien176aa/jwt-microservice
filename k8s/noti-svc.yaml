@@ -23,10 +23,12 @@ spec:
     spec:
       containers:
       - name: notification-service
-        image: datnd2711/microsv-noti-svc:v5
+        image: datnd2711/microsv-noti-svc:release-v4
         ports:
         - containerPort: 8083
         env:
+        - name: REDIS_HOST
+          value: redis
         - name: KAFKA_HOST
           value: kafka
         - name: KAFKA_PORT
@@ -35,6 +37,24 @@ spec:
           value: notification-group
         - name: SPRING_KAFKA_CONSUMER_GROUP_ID
           value: notification-group
+        - name: MYSQL_HOST
+          value: mysql
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: javatechie
+        - name: URL_IDENTITY_SERVICE
+          value: http://identity-service:9898
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: common-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: common-secret
+              key: MYSQL_PASSWORD
 ---
 apiVersion: v1
 kind: Service

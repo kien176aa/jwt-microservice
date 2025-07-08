@@ -23,10 +23,18 @@ spec:
     spec:
       containers:
       - name: identity-service
-        image: datnd2711/microsv-identity-svc:latest
+        image: datnd2711/microsv-identity-svc:release-v4
         ports:
         - containerPort: 9898
         env:
+        - name: KAFKA_HOST
+          value: kafka
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_GROUP_ID
+          value: notification-group
+        - name: SPRING_KAFKA_CONSUMER_GROUP_ID
+          value: notification-group
         - name: MYSQL_HOST
           value: mysql
         - name: REDIS_HOST

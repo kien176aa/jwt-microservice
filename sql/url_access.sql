@@ -41,3 +41,5 @@ WHERE role = 'USER';
 INSERT INTO url_access (role, url)
 SELECT 'USER', '/orders,/product,/vouchers'
     WHERE ROW_COUNT() = 0;
+
+select * from url_access;
