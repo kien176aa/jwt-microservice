@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -56,9 +57,11 @@ public class RedisWebSocketService {
 
     public void sendToTopic(String destination, Object message) {
         try {
+            log.info("Sending message to topic start: {}, {}", destination, message);
             messagingTemplate.convertAndSend(destination, message);
             RedisMessage redisMessage = new RedisMessage(null, destination, message, "TOPIC", podId);
             redisTemplate.convertAndSend(WEBSOCKET_CHANNEL, redisMessage);
+            log.info("Sending message to topic end: {}, {}", destination, message);
         } catch (Exception e) {
             log.error("Error sending message to topic {}: {}", destination, e.getMessage(), e);
         }
@@ -115,6 +118,7 @@ public class RedisWebSocketService {
     @JsonIgnoreProperties(ignoreUnknown = true)
     @Getter
     @Setter
+    @ToString
     public static class RedisMessage {
         private String userId;
         private String destination;

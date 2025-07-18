@@ -5,14 +5,39 @@ spring:
   application:
     name: ORDER-SERVICE
   kafka:
-    bootstrap-servers: ${KAFKA_HOST}:${KAFKA_PORT}
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:9092}
 
 identity-service:
-  url: ${URL_IDENTITY_SERVICE}
+  url: ${URL_IDENTITY_SERVICE:http://localhost:9898}
 product-service:
-  url: ${URL_PRODUCT_SERVICE}
+  url: ${URL_PRODUCT_SERVICE:http://localhost:8082}
 
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone : ${EUREKA_DEFAULT_ZONE}
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+    instances:
+      decreaseStockCB:
+        base-config: default
+      getProductByUserCB:
+        base-config: default
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+
+    instances:
+      decreaseStockRetry:
+        base-config: default
+      getProductByUserRetry:
+        base-config: default

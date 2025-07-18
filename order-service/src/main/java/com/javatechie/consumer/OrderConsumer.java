@@ -1,12 +1,14 @@
 package com.javatechie.consumer;
 
-import com.javatechie.client.ProductClient;
 import com.javatechie.entity.Order;
 import com.javatechie.repository.OrderRepository;
 import com.javatechie.repository.VoucherRepository;
+import com.javatechie.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.example.constants.ConstantValue;
+import org.example.constants.ErrorMessage;
 import org.example.dtos.CommonResponse;
 import org.example.dtos.DecreaseStockRequest;
 import org.example.dtos.OrderDto;
@@ -18,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class OrderConsumer {
 
     private final OrderRepository orderRepository;
     private final VoucherRepository voucherRepository;
-    private final ProductClient productClient;
+    private final ProductService productService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @KafkaListener(topics = "order-topic", groupId = "order-group", containerFactory = "genericKafkaListenerContainerFactory")
@@ -38,7 +39,7 @@ public class OrderConsumer {
             if (mess instanceof ConsumerRecord record) {
                 if (record.value() instanceof OrderDto order) {
                     log.info("Processing order: " + order);
-                    CommonResponse<?> response = productClient.decreaseStock(new DecreaseStockRequest(
+                    CommonResponse<?> response = productService.decreaseStock(new DecreaseStockRequest(
                             order.getCartItems(),
                             order.getTransactionId()
                     ));
@@ -47,7 +48,8 @@ public class OrderConsumer {
                         order.setStatus("COMPLETED");
                         applyVoucher(order);
                     } else {
-                        order.setStatus("FAILED");
+                        String failReason = (response.getData() instanceof String) ? (String) response.getData() : ErrorMessage.UNKNOWN_ERROR;
+                        order.setStatus("FAILED: " + failReason);
                     }
                     orderRepository.save(new Order(order));
                     log.info("Order status updated: " + order.getStatus());

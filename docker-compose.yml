@@ -11,6 +11,7 @@ services:
       - "3307:3306"
     volumes:
       - ./.docker/data/db:/var/lib/mysql
+
   redis:
     image: redis:7-alpine
     container_name: redis
@@ -20,6 +21,43 @@ services:
     volumes:
       - ./.docker/data/redis:/data
     command: redis-server --appendonly yes
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./.docker/data/elasticsearch:/usr/share/elasticsearch/data
+      - ./es-config/synonyms.txt:/usr/share/elasticsearch/config/synonyms.txt
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: kibana
+    restart: always
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: ""
+      ELASTICSEARCH_PASSWORD: ""
+    ports:
+      - "5601:5601"
+
   frontend-service:
     container_name: frontend
     build:
@@ -59,6 +97,7 @@ services:
     depends_on:
       - mysql
       - kafka
+      - elasticsearch
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
@@ -67,6 +106,8 @@ services:
       MYSQL_PASSWORD: root
       URL_IDENTITY_SERVICE: http://identity-service:9898
       EUREKA_DEFAULT_ZONE: http://eureka:8761/eureka/
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
     ports:
       - "8082:8082"
 
@@ -88,7 +129,6 @@ services:
       KAFKA_GROUP_ID: notification-group
       REDIS_HOST: redis
       URL_IDENTITY_SERVICE: http://identity-service:9898
-
     ports:
       - "8083:8083"
 

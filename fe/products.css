@@ -1,0 +1,102 @@
+/* CSS cho animation số lượng sản phẩm giảm */
+.quantity-container {
+    position: relative;
+    display: inline-block;
+}
+
+.quantity-number {
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+/* Animation khi số lượng giảm */
+.quantity-decrease {
+    animation: slideDown 0.6s ease-out;
+    color: #dc3545; /* Màu đỏ để nhấn mạnh việc giảm */
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(-10px);
+        opacity: 0;
+        color: #dc3545;
+    }
+    50% {
+        transform: translateY(0);
+        opacity: 1;
+        color: #dc3545;
+        font-weight: bold;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+        color: #6c757d; /* Trở về màu bình thường */
+        font-weight: normal;
+    }
+}
+
+/* Animation pulse nhẹ khi có thay đổi */
+.quantity-pulse {
+    animation: pulse 0.4s ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+        background-color: #fff3cd;
+        border-radius: 3px;
+        padding: 2px 4px;
+    }
+    100% {
+        transform: scale(1);
+        background-color: transparent;
+        padding: 0;
+    }
+}
+
+/* Animation shake khi số lượng thấp */
+.quantity-low {
+    animation: shake 0.5s ease-in-out;
+    color: #dc3545;
+    font-weight: bold;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-2px);
+    }
+    75% {
+        transform: translateX(2px);
+    }
+}
+
+/* Animation fade khi hết hàng */
+.quantity-zero {
+    animation: fadeToRed 0.8s ease-out;
+    color: #dc3545;
+    font-weight: bold;
+}
+
+@keyframes fadeToRed {
+    0% {
+        background-color: #fff;
+        color: #6c757d;
+    }
+    50% {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-radius: 3px;
+        padding: 2px 4px;
+    }
+    100% {
+        background-color: transparent;
+        color: #dc3545;
+        padding: 0;
+    }
+}
