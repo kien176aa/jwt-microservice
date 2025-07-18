@@ -164,7 +164,6 @@ services:
       context: .
       dockerfile: api-gateway/Dockerfile
     depends_on:
-      - eureka
       - order-service
       - product-service
       - identity-service
@@ -176,17 +175,6 @@ services:
       IDENTITY_SERVICE_URI: http://identity-service:9898
     ports:
       - "8080:8080"
-
-  eureka:
-    build:
-      context: .
-      dockerfile: eureka-service-registry/Dockerfile
-    container_name: eureka-server
-    environment:
-      EUREKA_CLIENT_REGISTER_WITH_EUREKA: false
-      EUREKA_CLIENT_FETCH_REGISTRY: false
-    ports:
-      - "8761:8761"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
