@@ -1,0 +1,30 @@
+.voucher-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+}
+
+.voucher-item:hover {
+    background-color: #f9f9f9;
+}
+
+#selected-voucher {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 2px solid #28a745;
+    transition: all 0.3s ease;
+}
+
+#selected-voucher:hover {
+    background: #28a745;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}

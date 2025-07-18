@@ -36,6 +36,10 @@ public class CommonResponse<T> implements Serializable {
         return new CommonResponse<>(data, HttpStatus.BAD_REQUEST.value(), "error");
     }
 
+    public static <T> CommonResponse<T> notOkWithMess(T data, String mess) {
+        return new CommonResponse<>(data, HttpStatus.BAD_REQUEST.value(), mess);
+    }
+
     public static <T> CommonResponse<T> notFound(T data) {
         return new CommonResponse<>(data, HttpStatus.NOT_FOUND.value(), "error");
     }

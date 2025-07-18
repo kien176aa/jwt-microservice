@@ -7,6 +7,7 @@ import com.javatechie.entity.Voucher;
 import com.javatechie.repository.OrderRepository;
 import com.javatechie.service.AiService;
 import com.javatechie.service.GeminiService;
+import com.javatechie.service.ProductService;
 import com.javatechie.service.VoucherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class OrderController {
-    private final ProductClient productClient;
+    private final ProductService productService;
     private final OrderRepository orderRepository;
     private final VoucherService voucherService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
@@ -89,10 +90,13 @@ public class OrderController {
             return CommonResponse.unAuth();
         }
         log.info("start checkout: {}", userId);
-        CommonResponse<List<CartItemDto>> response = productClient.getProductByUserId(userId);
+        CommonResponse<List<CartItemDto>> response = productService.getProductByUserId(userId);
         log.info("get product by user: {}", response);
-        if (response.getStatusCode() != HttpStatus.OK.value() || response.getData().isEmpty()) {
-            return CommonResponse.notOk("Cart is empty");
+        if (response.getStatusCode() != HttpStatus.OK.value()) {
+            if(response.getData() != null && response.getData().isEmpty())
+                return CommonResponse.notOk("Cart is empty");
+            else
+                return CommonResponse.notOk(response.getMessage());
         }
         List<CartItemDto> selectedProducts = new ArrayList<>();
         double totalPrice = 0;

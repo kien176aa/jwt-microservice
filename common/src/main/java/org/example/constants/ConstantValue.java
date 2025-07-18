@@ -6,6 +6,7 @@ public class ConstantValue {
     public static final String TRUSTED_PACKAGE = "org.example.dtos";
     public static final String TIME_ZONE_ID = "Asia/Ho_Chi_Minh";
     public static final String ALLOW_URL = "ALLOW_URL";
+    public static final String PRODUCT_INDEX_NAME = "products_v2";
     public static final String URL_VALIDATE_TOKEN = "http://localhost:9898/auth/validate";
     public static final String URL_IDENTITY_SERVICE = "http://localhost:9898";
     public static final String URL_PRODUCT_SERVICE = "http://localhost:8082";

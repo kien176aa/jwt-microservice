@@ -9,7 +9,7 @@ spring:
 #      uri: mongodb://localhost:27017/product-db
 
 identity-service:
-  url: ${URL_IDENTITY_SERVICE}
+  url: ${URL_IDENTITY_SERVICE:http://localhost:9898}
 
 #eureka:
 #  client:

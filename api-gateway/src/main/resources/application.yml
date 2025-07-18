@@ -14,21 +14,21 @@ spring:
             allowedHeaders: "*" # Cho phép tất cả các header
       routes:
       - id: order-service
-        uri: ${ORDER_SERVICE_URI} # Sử dụng biến môi trường
+        uri: ${ORDER_SERVICE_URI:http://localhost:8081} # Sử dụng biến môi trường
         predicates:
         - Path=/swiggy/**, /orders/**, /vouchers/**
         filters:
         - AuthenticationFilter
 
       - id: product-service
-        uri: ${PRODUCT_SERVICE_URI} # Sử dụng biến môi trường
+        uri: ${PRODUCT_SERVICE_URI:http://localhost:8082} # Sử dụng biến môi trường
         predicates:
         - Path=/products/**
         filters:
         - AuthenticationFilter
 
       - id: identity-service
-        uri: ${IDENTITY_SERVICE_URI} # Sử dụng biến môi trường
+        uri: ${IDENTITY_SERVICE_URI:http://localhost:9898} # Sử dụng biến môi trường
         predicates:
         - Path=/auth/**, /users/**
         filters:
@@ -38,4 +38,4 @@ application:
   name: API-GATEWAY
 
 identity-service:
-  validate-token-url: ${URL_VALIDATE_TOKEN}
+  validate-token-url: ${URL_VALIDATE_TOKEN:http://localhost:9898/auth/validate}

@@ -9,4 +9,5 @@ public class ErrorMessage {
     public static final String PRODUCT_NAME_IS_EXISTED = "Product name is already existed!";
     public static final String PRODUCT_NOT_FOUND = "Product not found!";
     public static final String UN_AUTH2 = "User not found in Redis";
+    public static final String UNKNOWN_ERROR = "UNKNOWN_ERROR";
 }

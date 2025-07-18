@@ -6,17 +6,13 @@ import com.example.notificationservice.service.RedisWebSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.example.dtos.NotifyGrantVoucher;
-import org.example.dtos.OrderDto;
-import org.example.dtos.UserMessageDto;
+import org.example.dtos.*;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.user.SimpUser;
-import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -72,6 +68,22 @@ public class NotificationConsumer {
             log.error("✗ Error sending WebSocket message: {}", e.getMessage(), e);
         }
 
+        try{
+            if(order.getCartItems() != null && !order.getCartItems().isEmpty()) {
+                log.info("Update quantity sent to topic via Redis service");
+                order.getCartItems().forEach(item -> item.setUserId(null));
+                updateQuantityRealTime(order.getCartItems());
+            }
+        } catch (Exception e) {
+            log.error("Error update quantity realtime: {}", e.getMessage());
+        }
+
         log.info("=== KAFKA MESSAGE PROCESSING COMPLETED ===");
+    }
+
+    private void updateQuantityRealTime(List<CartItemDto> cartItems) {
+        log.info("Update quantity realtime start: {}", cartItems);
+        redisWebSocketService.sendToTopic("/topic/product-quantity", cartItems);
+        log.info("Update quantity realtime end: {}", cartItems);
     }
 }
