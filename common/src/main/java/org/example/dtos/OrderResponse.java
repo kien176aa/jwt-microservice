@@ -13,7 +13,7 @@ import java.util.List;
 public class OrderResponse {
     private Long id;
     private Long userId;
-    private LocalDateTime orderDate;
+    private String orderDate;
     private double totalPrice;
     private String status;
     private String cartItemsJson;

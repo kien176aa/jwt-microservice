@@ -115,6 +115,8 @@ public class OrderController {
 
         OrderDto order = new OrderDto(null, userId, LocalDateTime.now().toString(), totalPrice,
                 "PENDING", UUID.randomUUID().toString(), selectedProducts, setVoucher(voucher));
+        Order saveOrder = orderRepository.save(new Order(order));
+        order.setId(saveOrder.getId());
         log.info("Order info: {}", order);
         kafkaTemplate.send("order-topic", order);
 
@@ -155,7 +157,7 @@ public class OrderController {
         response.setData(orders.getContent().stream().map(item -> new OrderResponse(
                 item.getId(),
                 item.getUserId(),
-                item.getOrderDate(),
+                item.getOrderDate().toString(),
                 item.getTotalPrice(),
                 item.getStatus(),
                 item.getCartItemsJson(),

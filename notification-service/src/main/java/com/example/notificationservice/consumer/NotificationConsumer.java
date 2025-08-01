@@ -69,7 +69,8 @@ public class NotificationConsumer {
         }
 
         try{
-            if(order.getCartItems() != null && !order.getCartItems().isEmpty()) {
+            if(order.getCartItems() != null && !order.getCartItems().isEmpty()
+            && ("COMPLETED".equals(order.getStatus()) || "".equals(order.getStatus()))) {
                 log.info("Update quantity sent to topic via Redis service");
                 order.getCartItems().forEach(item -> item.setUserId(null));
                 updateQuantityRealTime(order.getCartItems());

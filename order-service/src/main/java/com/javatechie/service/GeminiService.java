@@ -42,7 +42,8 @@ public class GeminiService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     public String chat(String prompt) {
@@ -110,15 +111,14 @@ public class GeminiService {
                 "action": "mô tả hành động cần thực hiện",
                 "parameters": {
                     // Các tham số cho việc tìm kiếm
-                    // Với order: userId, status, fromDate, toDate, minTotalPrice, maxTotalPrice, voucherMess, fieldsToSelect
+                    // Với order: status, fromDate, toDate, minTotalPrice, maxTotalPrice, voucherMess, fieldsToSelect
                     // Với product: name, nameOp, price, priceOp, quantity, quantityOp, sortBy, orderBy, status
                 }
             }
             
             - Liên quan đến order:
-                + userId: bạn yên tâm đã truyền sẵn userId của currentUser rồi
                 + fromDate và toDate: phạm vi tìm kiếm ngày đặt đơn hàng, kiểu LocalDateTime trong java
-                + status: only FAILED, COMPLETED, PENDING
+                + status: COMPLETED(khi order thành công), PENDING(đang chờ xử lý), còn lại đều là thất bại
                 + minTotalPrice và maxTotalPrice: phạm vi giá tiền của đơn hàng
                 + fieldsToSelect: [id userId orderDate totalPrice status voucherMess cartItemsJson] để bạn có thể 
                     tiết kiệm token, cần select ra trường nào thì cho vào cách nhau bởi dấu phẩy là được
@@ -210,10 +210,8 @@ public class GeminiService {
         try {
             // Tạo OrderFilter từ parameters
             OrderFilter filter = new OrderFilter();
+            filter.setUserId(userId);
 
-            if (parameters.has("userId")) {
-                filter.setUserId(userId);
-            }
             if (parameters.has("status")) {
                 filter.setStatus(parameters.get("status").asText());
             }
@@ -313,16 +311,16 @@ public class GeminiService {
 
     private String generateFinalResponse(String originalQuestion, String data) {
         String prompt = String.format("""
-            Câu hỏi gốc: "%s"
+            Câu hỏi: "%s"
             
-            Dữ liệu đã lấy được:
-            %s
-            
-            Hãy phân tích dữ liệu và trả lời câu hỏi của user một cách chi tiết, rõ ràng.
-            Nếu cần tính toán, hãy tính toán chính xác.
-            Trả lời bằng tiếng Việt, thân thiện và hữu ích.
-            Nếu không có dữ liệu hoặc dữ liệu rỗng, hãy thông báo không tìm thấy kết quả phù hợp.
-            """, originalQuestion, data);
+           Thông tin liên quan:
+        %s
+        
+        Bạn hãy giúp người dùng giải đáp câu hỏi trên một cách rõ ràng, dễ hiểu và chi tiết.  
+        Hãy tính toán chính xác nếu cần, và truyền đạt như một người hỗ trợ tận tâm, thân thiện.  
+        Sử dụng tiếng Việt, tránh kiểu văn bản cứng nhắc hay máy móc.  
+        Nếu không có thông tin phù hợp, hãy phản hồi một cách chân thành rằng chưa thể tìm thấy câu trả lời.
+        """, originalQuestion, data);
 
         return callGeminiAPI(prompt);
     }

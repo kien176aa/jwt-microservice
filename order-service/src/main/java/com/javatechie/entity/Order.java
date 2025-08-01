@@ -33,6 +33,9 @@ public class Order {
     private String cartItemsJson;
 
     public Order(OrderDto dto){
+        if(dto.getId() != null){
+            this.id = dto.getId();
+        }
         userId = dto.getUserId();
         if(dto.getOrderDate() != null){
             try{
